@@ -1,0 +1,46 @@
+﻿@model CustomerViewModel
+
+@{
+    ViewData["Title"] = "Customer Details";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4">Customer Details</h1>
+
+    <dl class="row">
+        <dt class="col-sm-3">Name</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3">ID</dt>
+        <dd class="col-sm-9">@Model.Id</dd>
+
+        <dt class="col-sm-3">Created At</dt>
+        <dd class="col-sm-9">@Model.CreatedAt</dd>
+    </dl>
+
+    
+    <div class="d-flex gap-2">
+        <a asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-primary">
+            Edit
+        </a>
+
+        <form asp-action="Delete"
+              asp-route-id="@Model.Id"
+              method="post"
+              class="d-inline">
+
+            <button type="submit"
+                    class="btn btn-danger ms-2"
+                    onclick="return confirm('Are you sure you want to delete this customer?');">
+                Delete
+            </button>
+        </form>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Back
+        </a>
+    </div>
+    
+</div>

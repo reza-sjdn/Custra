@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Custra.Application/Custra.Application.csproj" />
+    <Project Path="src/Custra.Domain/Custra.Domain.csproj" />
+    <Project Path="src/Custra.Infrastructure/Custra.Infrastructure.csproj" />
+    <Project Path="src/Custra.Web/Custra.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Custra.Application.Tests/Custra.Application.Tests.csproj" />
+    <Project Path="tests/Custra.Domain.Tests/Custra.Domain.Tests.csproj" />
+    <Project Path="tests/Custra.Infrastructure.Tests/Custra.Infrastructure.Tests.csproj" />
+  </Folder>
+</Solution>

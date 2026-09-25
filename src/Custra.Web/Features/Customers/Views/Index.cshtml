@@ -1,0 +1,110 @@
+﻿@model CustomerListViewModel
+
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4">Customers</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <form asp-action="Index" method="get" class="row g-2">
+            <div class="col-md-6">
+                <input type="text"
+                       name="search"
+                       value="@Model.Search"
+                       class="form-control"
+                       placeholder="Search customers..." />
+            </div>
+
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    Search
+                </button>
+            </div>
+
+            <div class="col-auto">
+                <a asp-action="Index" class="btn btn-secondary">
+                    Clear
+                </a>
+            </div>
+        </form>
+
+        <a asp-action="Create" class="btn btn-primary">
+            Create Customer
+        </a>
+    </div>
+
+    @if (Model.Customers.Count == 0)
+    {
+        <div class="alert alert-info">
+            No customers found.
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Created At</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var customer in Model.Customers)
+                {
+                    <tr>
+                        <td>@customer.Name</td>
+                        <td>@customer.CreatedAt</td>
+                        <td>
+                            <a asp-action="Details"
+                               asp-route-id="@customer.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Details
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-search="@Model.Search"
+                           asp-route-page="@(Model.Page - 1)">
+                            Previous
+                        </a>
+                    </li>
+
+                    @for (var i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.Page ? "active" : "")">
+                            <a class="page-link"
+                               asp-action="Index"
+                               asp-route-search="@Model.Search"
+                               asp-route-page="@i">
+                                @i
+                            </a>
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-search="@Model.Search"
+                           asp-route-page="@(Model.Page + 1)">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    }
+</div>

@@ -1,0 +1,282 @@
+﻿using Custra.Application.Common.Authorization;
+using Custra.Domain.Authorization;
+using Custra.Domain.Organizations;
+using Custra.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Custra.Infrastructure.Persistence;
+
+public static class DevelopmentDataSeeder
+{
+    public static async Task SeedAsync(IServiceProvider services)
+    {
+        var userManager =
+            services.GetRequiredService<UserManager<ApplicationUser>>();
+
+        var dbContext =
+            services.GetRequiredService<CustraDbContext>();
+
+        const string email = "admin@custra.local";
+        const string password = "Admin123!";
+
+        // Create/find admin user
+        var user = await userManager.FindByEmailAsync(email);
+
+        if (user is null)
+        {
+            user = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true
+            };
+
+            var result = await userManager.CreateAsync(user, password);
+
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException(
+                    string.Join(
+                        "; ",
+                        result.Errors.Select(x => x.Description)));
+            }
+        }
+
+        // Create/find organization
+        var organization = await dbContext.Organizations
+            .FirstOrDefaultAsync();
+
+        if (organization is null)
+        {
+            organization = new Organization("Custra Development");
+
+            dbContext.Organizations.Add(organization);
+            await dbContext.SaveChangesAsync();
+        }
+
+        var organizationContext =
+            services.GetRequiredService<OrganizationContext>();
+
+        organizationContext.SetOrganization(organization.Id);
+
+        // Seed permissions
+        await SeedPermissionsAsync(dbContext);
+
+        // Create/find Admin role
+        var adminRole = await SeedAdminRoleAsync(
+            dbContext,
+            organization.Id);
+
+        // Assign all permissions to Admin
+        await SeedAdminRolePermissionsAsync(
+            dbContext,
+            adminRole.Id);
+
+        // Create/find SalesPerson role
+        var salespersonRole = await SeedSalespersonRoleAsync(
+            dbContext,
+            organization.Id);
+
+        // Assign permissions to SalesPerson
+        await SeedSalespersonRolePermissionsAsync(
+            dbContext,
+            salespersonRole.Id);
+
+        // Create membership
+        var membership = await dbContext.OrganizationMemberships
+            .SingleOrDefaultAsync(x =>
+                x.OrganizationId == organization.Id &&
+                x.UserId == user.Id);
+
+        if (membership is null)
+        {
+            dbContext.OrganizationMemberships.Add(
+                new OrganizationMembership(
+                    organization.Id,
+                    user.Id,
+                    adminRole.Id));
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        const string salespersonEmail = "salesperson@custra.local";
+        const string salespersonPassword = "Salesperson123!";
+
+        var salespersonUser =
+            await userManager.FindByEmailAsync(salespersonEmail);
+
+        if (salespersonUser is null)
+        {
+            salespersonUser = new ApplicationUser
+            {
+                UserName = salespersonEmail,
+                Email = salespersonEmail,
+                EmailConfirmed = true
+            };
+
+            var result = await userManager.CreateAsync(
+                salespersonUser,
+                salespersonPassword);
+
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException(
+                    string.Join(
+                        "; ",
+                        result.Errors.Select(x => x.Description)));
+            }
+        }
+
+        var salespersonMembershipExists =
+            await dbContext.OrganizationMemberships.AnyAsync(x =>
+                x.OrganizationId == organization.Id &&
+                x.UserId == salespersonUser.Id);
+
+        if (!salespersonMembershipExists)
+        {
+            dbContext.OrganizationMemberships.Add(
+                new OrganizationMembership(
+                    organization.Id,
+                    salespersonUser.Id,
+                    salespersonRole.Id));
+
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
+    private static async Task SeedPermissionsAsync(
+        CustraDbContext dbContext)
+    {
+        var permissions = new[]
+        {
+            new Permission(
+                Permissions.Customers.View,
+                "View customers"),
+
+            new Permission(
+                Permissions.Customers.Create,
+                "Create customers"),
+
+            new Permission(
+                Permissions.Customers.Update,
+                "Update customers"),
+
+            new Permission(
+                Permissions.Customers.Delete,
+                "Delete customers")
+        };
+
+        foreach (var permission in permissions)
+        {
+            var exists = await dbContext.Permissions
+                .AnyAsync(x => x.Name == permission.Name);
+
+            if (!exists)
+            {
+                dbContext.Permissions.Add(permission);
+            }
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static async Task<Role> SeedAdminRoleAsync(
+        CustraDbContext dbContext,
+        Guid organizationId)
+    {
+        var role = await dbContext.Roles
+            .SingleOrDefaultAsync(x =>
+                x.OrganizationId == organizationId &&
+                x.Name == "Admin");
+
+        if (role is null)
+        {
+            role = new Role(
+                organizationId,
+                "Admin");
+
+            dbContext.Roles.Add(role);
+            await dbContext.SaveChangesAsync();
+        }
+
+        return role;
+    }
+
+    private static async Task<Role> SeedSalespersonRoleAsync(
+        CustraDbContext dbContext,
+        Guid organizationId)
+    {
+        var role = await dbContext.Roles
+            .SingleOrDefaultAsync(x =>
+                x.OrganizationId == organizationId &&
+                x.Name == "Salesperson");
+
+        if (role is null)
+        {
+            role = new Role(
+                organizationId,
+                "Salesperson");
+
+            dbContext.Roles.Add(role);
+            await dbContext.SaveChangesAsync();
+        }
+
+        return role;
+    }
+
+    private static async Task SeedAdminRolePermissionsAsync(
+        CustraDbContext dbContext,
+        Guid roleId)
+    {
+        var permissionIds = await dbContext.Permissions
+            .Select(x => x.Id)
+            .ToListAsync();
+
+        foreach (var permissionId in permissionIds)
+        {
+            var exists = await dbContext.RolePermissions
+                .AnyAsync(x =>
+                    x.RoleId == roleId &&
+                    x.PermissionId == permissionId);
+
+            if (!exists)
+            {
+                dbContext.RolePermissions.Add(
+                    new RolePermission(
+                        roleId,
+                        permissionId));
+            }
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static async Task SeedSalespersonRolePermissionsAsync(
+        CustraDbContext dbContext,
+        Guid roleId)
+    {
+        var permission = await dbContext.Permissions
+            .SingleAsync(x => x.Name == Permissions.Customers.View);
+
+        var exists = await dbContext.RolePermissions
+            .AnyAsync(x =>
+                x.RoleId == roleId &&
+                x.PermissionId == permission.Id);
+
+        if (!exists)
+        {
+            dbContext.RolePermissions.Add(
+                new RolePermission(
+                    roleId,
+                    permission.Id));
+
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
+}
