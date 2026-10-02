@@ -1,5 +1,5 @@
 ﻿using Custra.Application.Common.Interfaces.CQRS;
-using Custra.Application.Common.Interfaces.Persistence;
+using Custra.Application.Common.Interfaces.Persistence.Queries;
 using Custra.Application.Common.Models;
 using Custra.Application.Customers.Queries.GetCustomerById;
 using System;

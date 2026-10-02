@@ -20,6 +20,13 @@
 
     
     <div class="d-flex gap-2">
+        <a asp-controller="Contacts"
+           asp-action="Index"
+           asp-route-customerId="@Model.Id"
+           class="btn btn-success">
+            Contacts
+        </a>
+
         <a asp-action="Edit"
            asp-route-id="@Model.Id"
            class="btn btn-primary">

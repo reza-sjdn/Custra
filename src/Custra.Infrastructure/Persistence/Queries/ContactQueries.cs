@@ -1,6 +1,6 @@
 ﻿using Custra.Application.Common.Interfaces.Persistence.Queries;
 using Custra.Application.Common.Models;
-using Custra.Application.Customers.Queries.GetCustomerById;
+using Custra.Application.Contacts.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,54 +8,68 @@ using System.Text;
 
 namespace Custra.Infrastructure.Persistence.Queries;
 
-public sealed class CustomerQueries(CustraDbContext dbContext)
-    : ICustomerQueries
+public sealed class ContactQueries(CustraDbContext dbContext)
+    : IContactQueries
 {
     private readonly CustraDbContext _dbContext = dbContext;
 
-    public async Task<CustomerDto?> GetByIdAsync(
+    public async Task<ContactDto?> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Customers
+        return await _dbContext.Contacts
             .AsNoTracking()
             .Where(x => x.Id == id)
-            .Select(x => new CustomerDto(
+            .Select(x => new ContactDto(
                 x.Id,
-                x.Name,
-                x.CreatedAt))
+                x.CustomerId,
+                x.FirstName,
+                x.LastName,
+                x.JobTitle,
+                x.Email,
+                x.Phone))
             .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<PagedResult<CustomerDto>> GetPagedAsync(
+    public async Task<PagedResult<ContactDto>> GetPagedAsync(
+        Guid customerId,
         string? search,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default)
     {
-        var query = _dbContext.Customers
+        var query = _dbContext.Contacts
             .AsNoTracking()
-            .AsQueryable();
+            .Where(x => x.CustomerId == customerId);
 
         if (!string.IsNullOrWhiteSpace(search))
         {
             search = search.Trim();
-            query = query.Where(x => x.Name.Contains(search));
+
+            query = query.Where(x =>
+                x.FirstName.Contains(search) ||
+                x.LastName.Contains(search) ||
+                (x.Email != null && x.Email.Contains(search)));
         }
 
         var totalCount = await query.CountAsync(cancellationToken);
 
         var items = await query
-            .OrderByDescending(x => x.CreatedAt)
+            .OrderBy(x => x.LastName)
+            .ThenBy(x => x.FirstName)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(x => new CustomerDto(
+            .Select(x => new ContactDto(
                 x.Id,
-                x.Name,
-                x.CreatedAt))
+                x.CustomerId,
+                x.FirstName,
+                x.LastName,
+                x.JobTitle,
+                x.Email,
+                x.Phone))
             .ToListAsync(cancellationToken);
 
-        return new PagedResult<CustomerDto>(
+        return new PagedResult<ContactDto>(
             items,
             page,
             pageSize,

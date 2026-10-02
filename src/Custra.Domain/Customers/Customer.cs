@@ -1,4 +1,5 @@
 ﻿using Custra.Domain.Common;
+using Custra.Domain.Contacts;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,6 +9,8 @@ namespace Custra.Domain.Customers;
 public sealed class Customer : OrganizationOwnedEntity
 {
     public string Name { get; private set; } = null!;
+
+    public ICollection<Contact> Contacts { get; private set; } = [];
 
     private Customer()
     {
@@ -21,7 +24,6 @@ public sealed class Customer : OrganizationOwnedEntity
                 nameof(name));
 
         Name = name.Trim();
-        CreatedAt = DateTime.UtcNow;
     }
 
     public void UpdateName(string name)

@@ -1,5 +1,5 @@
 ﻿using Custra.Application.Common.Interfaces.CQRS;
-using Custra.Application.Common.Interfaces.Persistence;
+using Custra.Application.Common.Interfaces.Persistence.Queries;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -154,6 +154,7 @@ public static class DevelopmentDataSeeder
     {
         var permissions = new[]
         {
+            #region Customer
             new Permission(
                 Permissions.Customers.View,
                 "View customers"),
@@ -168,7 +169,26 @@ public static class DevelopmentDataSeeder
 
             new Permission(
                 Permissions.Customers.Delete,
-                "Delete customers")
+                "Delete customers"),
+            #endregion
+
+            #region Contact
+            new Permission(
+                Permissions.Contacts.View,
+                "View contacts"),
+
+            new Permission(
+                Permissions.Contacts.Create,
+                "Create contacts"),
+
+            new Permission(
+                Permissions.Contacts.Update,
+                "Update contacts"),
+
+            new Permission(
+                Permissions.Contacts.Delete,
+                "Delete contacts")
+            #endregion
         };
 
         foreach (var permission in permissions)
@@ -260,23 +280,29 @@ public static class DevelopmentDataSeeder
         CustraDbContext dbContext,
         Guid roleId)
     {
-        var permission = await dbContext.Permissions
-            .SingleAsync(x => x.Name == Permissions.Customers.View);
+        var permissionIds = await dbContext.Permissions
+            .Where(x => x.Name == Permissions.Customers.View ||
+                        x.Name == Permissions.Contacts.View)
+            .Select(x => x.Id)
+            .ToListAsync();
 
-        var exists = await dbContext.RolePermissions
-            .AnyAsync(x =>
-                x.RoleId == roleId &&
-                x.PermissionId == permission.Id);
-
-        if (!exists)
+        foreach (var permissionId in permissionIds)
         {
-            dbContext.RolePermissions.Add(
-                new RolePermission(
-                    roleId,
-                    permission.Id));
+            var exists = await dbContext.RolePermissions
+                .AnyAsync(x =>
+                    x.RoleId == roleId &&
+                    x.PermissionId == permissionId);
 
-            await dbContext.SaveChangesAsync();
+            if (!exists)
+            {
+                dbContext.RolePermissions.Add(
+                    new RolePermission(
+                        roleId,
+                        permissionId));
+            }
         }
+
+        await dbContext.SaveChangesAsync();
     }
 
 }

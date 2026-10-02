@@ -13,4 +13,13 @@ public static class Permissions
         public const string Update = "Customers.Update";
         public const string Delete = "Customers.Delete";
     }
+
+    public static class Contacts
+    {
+        public const string View = "Contacts.View";
+        public const string Create = "Contacts.Create";
+        public const string Update = "Contacts.Update";
+        public const string Delete = "Contacts.Delete";
+    }
+
 }

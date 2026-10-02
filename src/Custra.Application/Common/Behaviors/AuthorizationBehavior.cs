@@ -2,6 +2,11 @@
 using Custra.Application.Common.Exceptions;
 using Custra.Application.Common.Interfaces;
 using Custra.Application.Common.Interfaces.Authorization;
+using Custra.Application.Contacts.Commands.CreateContact;
+using Custra.Application.Contacts.Commands.DeleteContact;
+using Custra.Application.Contacts.Commands.UpdateContact;
+using Custra.Application.Contacts.Queries.GetContactById;
+using Custra.Application.Contacts.Queries.GetContacts;
 using Custra.Application.Customers.Commands.CreateCustomer;
 using Custra.Application.Customers.Commands.DeleteCustomer;
 using Custra.Application.Customers.Commands.UpdateCustomer;
@@ -69,6 +74,7 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
     {
         return request switch
         {
+            #region Customers
             CreateCustomerCommand =>
                 Permissions.Customers.Create,
 
@@ -83,6 +89,24 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
 
             DeleteCustomerCommand =>
                 Permissions.Customers.Delete,
+            #endregion
+
+            #region Contacts
+            GetContactByIdQuery =>
+                Permissions.Contacts.View,
+
+            GetContactsQuery =>
+                Permissions.Contacts.View,
+
+            CreateContactCommand =>
+                Permissions.Contacts.Create,
+
+            UpdateContactCommand =>
+                Permissions.Contacts.Update,
+
+            DeleteContactCommand =>
+                Permissions.Contacts.Delete,
+            #endregion
 
             _ => throw new InvalidOperationException(
                 $"No permission is configured for request type '{typeof(TRequest).Name}'.")

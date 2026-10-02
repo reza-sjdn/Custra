@@ -1,9 +1,12 @@
 ﻿using Custra.Application.Common.Interfaces;
 using Custra.Application.Common.Interfaces.Authorization;
 using Custra.Application.Common.Interfaces.Persistence;
+using Custra.Application.Common.Interfaces.Persistence.Commands;
+using Custra.Application.Common.Interfaces.Persistence.Queries;
 using Custra.Infrastructure.Authorization;
 using Custra.Infrastructure.Identity;
 using Custra.Infrastructure.Persistence;
+using Custra.Infrastructure.Persistence.Commands;
 using Custra.Infrastructure.Persistence.Queries;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +34,8 @@ public static class DependencyInjection
             sp => sp.GetRequiredService<CustraDbContext>());
 
         services.AddScoped<ICustomerQueries, CustomerQueries>();
+        services.AddScoped<ICustomerCommands, CustomerCommands>();
+
 
         services.AddHttpContextAccessor();
         services.AddScoped<
@@ -45,6 +50,10 @@ public static class DependencyInjection
             sp.GetRequiredService<OrganizationContext>());
 
         services.AddScoped<IAuthorizationService, AuthorizationService>();
+
+        services.AddScoped<IContactQueries, ContactQueries>();
+        services.AddScoped<IContactCommands, ContactCommands>();
+
 
         return services;
     }

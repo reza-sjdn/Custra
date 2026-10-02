@@ -1,36 +1,49 @@
 ﻿using Custra.Application.Common.Interfaces.CQRS;
 using Custra.Application.Common.Interfaces.Persistence;
 using Custra.Application.Common.Interfaces.Persistence.Commands;
-using MediatR;
+using Custra.Domain.Contacts;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Custra.Application.Customers.Commands.UpdateCustomer;
+namespace Custra.Application.Contacts.Commands.CreateContact;
 
-public sealed class UpdateCustomerCommandHandler(
+public sealed class CreateContactCommandHandler(
     IApplicationDbContext dbContext,
+    IContactCommands contactCommands,
     ICustomerCommands customerCommands)
-    : ICommandHandler<UpdateCustomerCommand, Unit>
+    : ICommandHandler<CreateContactCommand, Guid>
 {
     private readonly IApplicationDbContext _dbContext = dbContext;
+    private readonly IContactCommands _contactCommands = contactCommands;
     private readonly ICustomerCommands _customerCommands = customerCommands;
 
-    public async Task<Unit> Handle(
-        UpdateCustomerCommand request,
+    public async Task<Guid> Handle(
+        CreateContactCommand request,
         CancellationToken cancellationToken)
     {
         var customer = await _customerCommands.FindCustomerAsync(
-            request.Id,
+            request.CustomerId,
             cancellationToken);
 
         if (customer is null)
             throw new KeyNotFoundException(
                 "Customer was not found.");
 
-        customer.UpdateName(request.Name);
+        var contact = new Contact(
+            request.CustomerId,
+            request.FirstName,
+            request.LastName,
+            request.JobTitle,
+            request.Email,
+            request.Phone);
+
+        await _contactCommands.AddContactAsync(
+            contact,
+            cancellationToken);
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return Unit.Value;
+        return contact.Id;
     }
 }

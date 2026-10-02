@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Custra.Application.Common.Interfaces.Persistence;
+namespace Custra.Application.Common.Interfaces.Persistence.Queries;
 
 public interface ICustomerQueries
 {

@@ -6,29 +6,32 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Custra.Application.Customers.Commands.UpdateCustomer;
+namespace Custra.Application.Contacts.Commands.DeleteContact;
 
-public sealed class UpdateCustomerCommandHandler(
-    IApplicationDbContext dbContext,
-    ICustomerCommands customerCommands)
-    : ICommandHandler<UpdateCustomerCommand, Unit>
+public sealed class DeleteContactCommandHandler(
+    IContactCommands contactCommands,
+    IApplicationDbContext dbContext)
+    : ICommandHandler<DeleteContactCommand, Unit>
 {
+    private readonly IContactCommands _contactCommands = contactCommands;
     private readonly IApplicationDbContext _dbContext = dbContext;
-    private readonly ICustomerCommands _customerCommands = customerCommands;
 
     public async Task<Unit> Handle(
-        UpdateCustomerCommand request,
+        DeleteContactCommand request,
         CancellationToken cancellationToken)
     {
-        var customer = await _customerCommands.FindCustomerAsync(
+        var contact = await _contactCommands.FindContactAsync(
             request.Id,
             cancellationToken);
 
-        if (customer is null)
+        if (contact is null)
             throw new KeyNotFoundException(
-                "Customer was not found.");
+                "Contact was not found.");
 
-        customer.UpdateName(request.Name);
+        await _contactCommands.DeleteAsync(
+            contact,
+            cancellationToken);
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;

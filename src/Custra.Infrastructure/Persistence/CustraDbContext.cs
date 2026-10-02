@@ -2,6 +2,7 @@
 using Custra.Application.Common.Interfaces.Persistence;
 using Custra.Domain.Authorization;
 using Custra.Domain.Common;
+using Custra.Domain.Contacts;
 using Custra.Domain.Customers;
 using Custra.Domain.Organizations;
 using Custra.Infrastructure.Identity;
@@ -38,6 +39,7 @@ public class CustraDbContext
     public new DbSet<Role> Roles => Set<Role>();
     public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
     public DbSet<Customer> Customers => Set<Customer>();
+    public DbSet<Contact> Contacts => Set<Contact>();
 
     public override async Task<int> SaveChangesAsync(
         CancellationToken cancellationToken = default)
@@ -117,31 +119,6 @@ public class CustraDbContext
             modelBuilder.Entity(entityType.ClrType)
                 .HasQueryFilter(lambda);
         }
-    }
-
-    public async Task AddCustomerAsync(
-        Customer customer,
-        CancellationToken cancellationToken = default)
-    {
-        await Customers.AddAsync(customer, cancellationToken);
-    }
-
-    public async Task<Customer?> FindCustomerAsync(
-        Guid id,
-        CancellationToken cancellationToken = default)
-    {
-        return await Customers
-            .SingleOrDefaultAsync(
-                x => x.Id == id,
-                cancellationToken);
-    }
-
-    public Task DeleteCustomerAsync(
-        Customer customer,
-        CancellationToken cancellationToken = default)
-    {
-        Customers.Remove(customer);
-        return Task.CompletedTask;
     }
 
 }
