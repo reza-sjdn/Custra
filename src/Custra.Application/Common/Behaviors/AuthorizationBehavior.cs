@@ -12,6 +12,12 @@ using Custra.Application.Customers.Commands.DeleteCustomer;
 using Custra.Application.Customers.Commands.UpdateCustomer;
 using Custra.Application.Customers.Queries.GetCustomerById;
 using Custra.Application.Customers.Queries.GetCustomers;
+using Custra.Application.Leads.Commands.ChangeLeadStatus;
+using Custra.Application.Leads.Commands.CreateLead;
+using Custra.Application.Leads.Commands.DeleteLead;
+using Custra.Application.Leads.Commands.UpdateLead;
+using Custra.Application.Leads.Queries.GetLeadById;
+using Custra.Application.Leads.Queries.GetLeads;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -106,6 +112,26 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
 
             DeleteContactCommand =>
                 Permissions.Contacts.Delete,
+            #endregion
+
+            #region Leads
+            GetLeadByIdQuery =>
+                Permissions.Leads.View,
+
+            GetLeadsQuery =>
+                Permissions.Leads.View,
+
+            CreateLeadCommand =>
+                Permissions.Leads.Create,
+
+            UpdateLeadCommand =>
+                Permissions.Leads.Update,
+
+            DeleteLeadCommand =>
+                Permissions.Leads.Delete,
+
+            ChangeLeadStatusCommand =>
+                Permissions.Leads.Update,
             #endregion
 
             _ => throw new InvalidOperationException(

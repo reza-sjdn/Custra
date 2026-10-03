@@ -1,0 +1,143 @@
+﻿@model LeadListViewModel
+
+@{
+    ViewData["Title"] = "Leads";
+}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Leads</h1>
+
+        <a asp-action="Create"
+           class="btn btn-primary">
+            Create Lead
+        </a>
+    </div>
+
+    <form asp-action="Index"
+          method="get"
+          class="row g-2 mb-4">
+
+        <div class="col-md-5">
+            <input type="text"
+                   name="search"
+                   value="@Model.Search"
+                   class="form-control"
+                   placeholder="Search leads..." />
+        </div>
+
+        <div class="col-md-3">
+            <select name="status"
+                    class="form-select">
+
+                <option value="">All statuses</option>
+
+                @foreach (var status in Enum.GetValues<LeadStatus>())
+                {
+                    <option value="@status"
+                            selected="@(Model.Status == status)">
+                        @status
+                    </option>
+                }
+
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit"
+                    class="btn btn-outline-secondary w-100">
+                Search
+            </button>
+        </div>
+
+    </form>
+
+    @if (Model.Leads.Count == 0)
+    {
+        <div class="alert alert-info">
+            No leads found.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Company</th>
+                        <th>Job Title</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var lead in Model.Leads)
+                    {
+                        <tr>
+                            <td>@lead.FullName</td>
+                            <td>@lead.CompanyName</td>
+                            <td>@lead.JobTitle</td>
+                            <td>@lead.Email</td>
+                            <td>@lead.Status</td>
+
+                            <td class="text-end">
+                                <a asp-action="Details"
+                                   asp-route-id="@lead.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav>
+                <ul class="pagination">
+
+                    @if (Model.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               asp-action="Index"
+                               asp-route-search="@Model.Search"
+                               asp-route-status="@Model.Status"
+                               asp-route-page="@(Model.Page - 1)">
+                                Previous
+                            </a>
+                        </li>
+                    }
+
+                    <li class="page-item active">
+                        <span class="page-link">
+                            @Model.Page
+                        </span>
+                    </li>
+
+                    @if (Model.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               asp-action="Index"
+                               asp-route-search="@Model.Search"
+                               asp-route-status="@Model.Status"
+                               asp-route-page="@(Model.Page + 1)">
+                                Next
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+            </nav>
+        }
+    }
+</div>

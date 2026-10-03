@@ -22,4 +22,12 @@ public static class Permissions
         public const string Delete = "Contacts.Delete";
     }
 
+    public static class Leads
+    {
+        public const string View = "Leads.View";
+        public const string Create = "Leads.Create";
+        public const string Update = "Leads.Update";
+        public const string Delete = "Leads.Delete";
+    }
+
 }

@@ -187,8 +187,26 @@ public static class DevelopmentDataSeeder
 
             new Permission(
                 Permissions.Contacts.Delete,
-                "Delete contacts")
+                "Delete contacts"),
             #endregion
+
+            #region Leads
+            new Permission(
+                Permissions.Leads.View,
+                "View leads"),
+
+            new Permission(
+                Permissions.Leads.Create,
+                "Create leads"),
+
+            new Permission(
+                Permissions.Leads.Update,
+                "Update leads"),
+
+            new Permission(
+                Permissions.Leads.Delete,
+                "Delete leads")
+	        #endregion
         };
 
         foreach (var permission in permissions)
@@ -282,7 +300,8 @@ public static class DevelopmentDataSeeder
     {
         var permissionIds = await dbContext.Permissions
             .Where(x => x.Name == Permissions.Customers.View ||
-                        x.Name == Permissions.Contacts.View)
+                        x.Name == Permissions.Contacts.View ||
+                        x.Name == Permissions.Leads.View)
             .Select(x => x.Id)
             .ToListAsync();
 

@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using Custra.Application.Contacts.DTOs;
-using Custra.Web.Features.Contacts.ViewModels;
+using Custra.Application.Leads.DTOs;
+using Custra.Web.Features.Leads.ViewModels;
 
 namespace Custra.Web.AutoMapper;
 
-public class ContactMappingProfile : Profile
+public class LeadMappingProfile : Profile
 {
-    public ContactMappingProfile()
+    public LeadMappingProfile()
     {
         // Entity => Entity
 
@@ -15,8 +15,8 @@ public class ContactMappingProfile : Profile
         // Entity => Dto
 
         // Dto => Entity
-        CreateMap<ContactDto, ContactViewModel>();
-        CreateMap<ContactDto, EditContactViewModel>();
+        CreateMap<LeadDto, LeadViewModel>();
+        CreateMap<LeadDto, EditLeadViewModel>();
 
         // Entity <=> Dto
 

@@ -54,6 +54,8 @@ public static class DependencyInjection
         services.AddScoped<IContactQueries, ContactQueries>();
         services.AddScoped<IContactCommands, ContactCommands>();
 
+        services.AddScoped<ILeadQueries, LeadQueries>();
+        services.AddScoped<ILeadCommands, LeadCommands>();
 
         return services;
     }
