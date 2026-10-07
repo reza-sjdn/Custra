@@ -263,6 +263,165 @@ namespace Custra.Infrastructure.Migrations
                     b.ToTable("Leads");
                 });
 
+            modelBuilder.Entity("Custra.Domain.Opportunities.Opportunity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ContactId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<decimal?>("EstimatedValue")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("ExpectedCloseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SalesPipelineId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SalesPipelineStageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContactId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("SalesPipelineId");
+
+                    b.HasIndex("SalesPipelineStageId");
+
+                    b.HasIndex("OrganizationId", "CustomerId");
+
+                    b.HasIndex("OrganizationId", "OwnerUserId");
+
+                    b.HasIndex("OrganizationId", "Status");
+
+                    b.HasIndex("OrganizationId", "SalesPipelineId", "SalesPipelineStageId");
+
+                    b.ToTable("Opportunities");
+                });
+
+            modelBuilder.Entity("Custra.Domain.Opportunities.SalesPipeline", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrganizationId", "Name")
+                        .IsUnique();
+
+                    b.ToTable("SalesPipelines");
+                });
+
+            modelBuilder.Entity("Custra.Domain.Opportunities.SalesPipelineStage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("Probability")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<Guid>("SalesPipelineId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SalesPipelineId");
+
+                    b.HasIndex("OrganizationId", "SalesPipelineId", "Name")
+                        .IsUnique();
+
+                    b.HasIndex("OrganizationId", "SalesPipelineId", "Order")
+                        .IsUnique();
+
+                    b.ToTable("SalesPipelineStages");
+                });
+
             modelBuilder.Entity("Custra.Domain.Organizations.Organization", b =>
                 {
                     b.Property<Guid>("Id")
@@ -555,6 +714,51 @@ namespace Custra.Infrastructure.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("Custra.Domain.Opportunities.Opportunity", b =>
+                {
+                    b.HasOne("Custra.Domain.Contacts.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Custra.Domain.Customers.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Custra.Domain.Opportunities.SalesPipeline", "SalesPipeline")
+                        .WithMany()
+                        .HasForeignKey("SalesPipelineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Custra.Domain.Opportunities.SalesPipelineStage", "SalesPipelineStage")
+                        .WithMany("Opportunities")
+                        .HasForeignKey("SalesPipelineStageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Contact");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("SalesPipeline");
+
+                    b.Navigation("SalesPipelineStage");
+                });
+
+            modelBuilder.Entity("Custra.Domain.Opportunities.SalesPipelineStage", b =>
+                {
+                    b.HasOne("Custra.Domain.Opportunities.SalesPipeline", "SalesPipeline")
+                        .WithMany("Stages")
+                        .HasForeignKey("SalesPipelineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SalesPipeline");
+                });
+
             modelBuilder.Entity("Custra.Domain.Organizations.OrganizationMembership", b =>
                 {
                     b.HasOne("Custra.Domain.Organizations.Organization", "Organization")
@@ -632,6 +836,16 @@ namespace Custra.Infrastructure.Migrations
             modelBuilder.Entity("Custra.Domain.Customers.Customer", b =>
                 {
                     b.Navigation("Contacts");
+                });
+
+            modelBuilder.Entity("Custra.Domain.Opportunities.SalesPipeline", b =>
+                {
+                    b.Navigation("Stages");
+                });
+
+            modelBuilder.Entity("Custra.Domain.Opportunities.SalesPipelineStage", b =>
+                {
+                    b.Navigation("Opportunities");
                 });
 #pragma warning restore 612, 618
         }

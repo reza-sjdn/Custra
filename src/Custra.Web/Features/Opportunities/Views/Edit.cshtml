@@ -1,0 +1,189 @@
+﻿@model EditOpportunityViewModel
+
+@{
+    ViewData["Title"] = "Edit Opportunity";
+}
+
+<h2 class="mb-4">Edit Opportunity</h2>
+
+<form asp-action="Edit" method="post">
+
+    <input asp-for="Id" type="hidden" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CustomerId" class="form-label"></label>
+        <select asp-for="CustomerId" class="form-select" id="customerSelect">
+            <option value="">-- Select Customer --</option>
+
+            @foreach (var customer in Model.Customers)
+            {
+                <option value="@customer.Id">@customer.Name</option>
+            }
+        </select>
+        <span asp-validation-for="CustomerId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ContactId" class="form-label"></label>
+        <select asp-for="ContactId" class="form-select" id="contactSelect">
+            <option value="">-- Select Contact --</option>
+
+            @foreach (var contact in Model.Contacts)
+            {
+                <option value="@contact.Id">@contact.Name</option>
+            }
+        </select>
+        <span asp-validation-for="ContactId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="OwnerUserId" class="form-label"></label>
+        <select asp-for="OwnerUserId" class="form-select">
+            <option value="">-- Select Owner --</option>
+
+            @foreach (var owner in Model.Owners)
+            {
+                <option value="@owner.Id">@owner.Name</option>
+            }
+        </select>
+        <span asp-validation-for="OwnerUserId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SalesPipelineId" class="form-label"></label>
+        <select asp-for="SalesPipelineId" class="form-select" id="pipelineSelect">
+            <option value="">-- Select Pipeline --</option>
+
+            @foreach (var pipeline in Model.Pipelines)
+            {
+                <option value="@pipeline.Id">@pipeline.Name</option>
+            }
+        </select>
+        <span asp-validation-for="SalesPipelineId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SalesPipelineStageId" class="form-label"></label>
+        <select asp-for="SalesPipelineStageId" class="form-select" id="stageSelect">
+            <option value="">-- Select Stage --</option>
+
+            @foreach (var stage in Model.Stages)
+            {
+                <option value="@stage.Id">@stage.Name</option>
+            }
+        </select>
+        <span asp-validation-for="SalesPipelineStageId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EstimatedValue" class="form-label"></label>
+        <input asp-for="EstimatedValue" class="form-control" />
+        <span asp-validation-for="EstimatedValue" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ExpectedCloseDate" class="form-label"></label>
+        <input asp-for="ExpectedCloseDate"
+               type="date"
+               class="form-control" />
+        <span asp-validation-for="ExpectedCloseDate" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Save Changes
+    </button>
+
+    <a asp-action="Details"
+       asp-route-id="@Model.Id"
+       class="btn btn-secondary">
+        Cancel
+    </a>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(function () {
+
+            $('#customerSelect').on('change', function () {
+                const customerId = $(this).val();
+                const contactSelect = $('#contactSelect');
+
+                contactSelect.empty();
+                contactSelect.append(
+                    $('<option>', {
+                        value: '',
+                        text: '-- Select Contact --'
+                    })
+                );
+
+                if (!customerId) {
+                    return;
+                }
+
+                $.get('@Url.Action("GetContacts", "Opportunities")', {
+                    customerId: customerId
+                }, function (contacts) {
+
+                    $.each(contacts, function (_, contact) {
+                        contactSelect.append(
+                            $('<option>', {
+                                value: contact.id,
+                                text: contact.name
+                            })
+                        );
+                    });
+                });
+            });
+
+
+            $('#pipelineSelect').on('change', function () {
+                const pipelineId = $(this).val();
+                const stageSelect = $('#stageSelect');
+
+                stageSelect.empty();
+                stageSelect.append(
+                    $('<option>', {
+                        value: '',
+                        text: '-- Select Stage --'
+                    })
+                );
+
+                if (!pipelineId) {
+                    return;
+                }
+
+                $.get('@Url.Action("GetStages", "Opportunities")', {
+                    pipelineId: pipelineId
+                }, function (stages) {
+
+                    $.each(stages, function (_, stage) {
+                        stageSelect.append(
+                            $('<option>', {
+                                value: stage.id,
+                                text: stage.name
+                            })
+                        );
+                    });
+                });
+            });
+
+        });
+    </script>
+}

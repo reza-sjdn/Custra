@@ -1,0 +1,59 @@
+﻿@model IReadOnlyList<SalesPipelineViewModel>
+
+@{
+    ViewData["Title"] = "Sales Pipelines";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Sales Pipelines</h2>
+
+    <a asp-action="Create" class="btn btn-primary">
+        Create Pipeline
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No sales pipelines found.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Stages</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var pipeline in Model)
+                {
+                    <tr>
+                        <td>@pipeline.Name</td>
+
+                        <td>@pipeline.Stages.Count</td>
+
+                        <td class="text-end">
+                            <a asp-action="Details"
+                               asp-route-id="@pipeline.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Details
+                            </a>
+
+                            <a asp-action="Edit"
+                               asp-route-id="@pipeline.Id"
+                               class="btn btn-sm btn-outline-secondary">
+                                Edit
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

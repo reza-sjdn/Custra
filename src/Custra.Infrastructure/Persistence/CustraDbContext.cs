@@ -5,6 +5,7 @@ using Custra.Domain.Common;
 using Custra.Domain.Contacts;
 using Custra.Domain.Customers;
 using Custra.Domain.Leads;
+using Custra.Domain.Opportunities;
 using Custra.Domain.Organizations;
 using Custra.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -42,6 +43,9 @@ public class CustraDbContext
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Contact> Contacts => Set<Contact>();
     public DbSet<Lead> Leads => Set<Lead>();
+    public DbSet<SalesPipeline> SalesPipelines => Set<SalesPipeline>();
+    public DbSet<SalesPipelineStage> SalesPipelineStages => Set<SalesPipelineStage>();
+    public DbSet<Opportunity> Opportunities => Set<Opportunity>();
 
     public override async Task<int> SaveChangesAsync(
         CancellationToken cancellationToken = default)

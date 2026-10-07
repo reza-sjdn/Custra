@@ -1,4 +1,5 @@
-﻿using Custra.Application.Common.Authorization;
+﻿#region Usings
+using Custra.Application.Common.Authorization;
 using Custra.Application.Common.Exceptions;
 using Custra.Application.Common.Interfaces;
 using Custra.Application.Common.Interfaces.Authorization;
@@ -6,11 +7,13 @@ using Custra.Application.Contacts.Commands.CreateContact;
 using Custra.Application.Contacts.Commands.DeleteContact;
 using Custra.Application.Contacts.Commands.UpdateContact;
 using Custra.Application.Contacts.Queries.GetContactById;
+using Custra.Application.Contacts.Queries.GetContactLookup;
 using Custra.Application.Contacts.Queries.GetContacts;
 using Custra.Application.Customers.Commands.CreateCustomer;
 using Custra.Application.Customers.Commands.DeleteCustomer;
 using Custra.Application.Customers.Commands.UpdateCustomer;
 using Custra.Application.Customers.Queries.GetCustomerById;
+using Custra.Application.Customers.Queries.GetCustomerLookup;
 using Custra.Application.Customers.Queries.GetCustomers;
 using Custra.Application.Leads.Commands.ChangeLeadStatus;
 using Custra.Application.Leads.Commands.CreateLead;
@@ -18,10 +21,33 @@ using Custra.Application.Leads.Commands.DeleteLead;
 using Custra.Application.Leads.Commands.UpdateLead;
 using Custra.Application.Leads.Queries.GetLeadById;
 using Custra.Application.Leads.Queries.GetLeads;
+using Custra.Application.Opportunities.Commands.ChangeOpportunityStage;
+using Custra.Application.Opportunities.Commands.CreateOpportunity;
+using Custra.Application.Opportunities.Commands.DeleteOpportunity;
+using Custra.Application.Opportunities.Commands.MarkOpportunityAsLost;
+using Custra.Application.Opportunities.Commands.MarkOpportunityAsWon;
+using Custra.Application.Opportunities.Commands.ReopenOpportunity;
+using Custra.Application.Opportunities.Commands.UpdateOpportunity;
+using Custra.Application.Opportunities.Queries.GetOpportunities;
+using Custra.Application.Opportunities.Queries.GetOpportunityById;
+using Custra.Application.OrganizationUsers.Queries.GetOrganizationUserLookup;
+using Custra.Application.SalesPipelines.Commands.CreateSalesPipeline;
+using Custra.Application.SalesPipelines.Commands.DeleteSalesPipeline;
+using Custra.Application.SalesPipelines.Commands.UpdateSalesPipeline;
+using Custra.Application.SalesPipelines.Queries.GetSalesPipelineById;
+using Custra.Application.SalesPipelines.Queries.GetSalesPipelineLookup;
+using Custra.Application.SalesPipelines.Queries.GetSalesPipelines;
+using Custra.Application.SalesPipelineStages.Commands.CreateSalesPipelineStage;
+using Custra.Application.SalesPipelineStages.Commands.DeleteSalesPipelineStage;
+using Custra.Application.SalesPipelineStages.Commands.UpdateSalesPipelineStage;
+using Custra.Application.SalesPipelineStages.Queries.GetSalesPipelineStageById;
+using Custra.Application.SalesPipelineStages.Queries.GetSalesPipelineStageLookup;
+using Custra.Application.SalesPipelineStages.Queries.GetSalesPipelineStages;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
+#endregion
 
 namespace Custra.Application.Common.Behaviors;
 
@@ -84,10 +110,9 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
             CreateCustomerCommand =>
                 Permissions.Customers.Create,
 
-            GetCustomerByIdQuery =>
-                Permissions.Customers.View,
-
-            GetCustomersQuery =>
+            GetCustomersQuery or
+            GetCustomerByIdQuery or
+            GetCustomerLookupQuery =>
                 Permissions.Customers.View,
 
             UpdateCustomerCommand =>
@@ -98,10 +123,10 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
             #endregion
 
             #region Contacts
-            GetContactByIdQuery =>
-                Permissions.Contacts.View,
 
-            GetContactsQuery =>
+            GetContactsQuery or
+            GetContactByIdQuery or
+            GetContactLookupQuery =>
                 Permissions.Contacts.View,
 
             CreateContactCommand =>
@@ -134,8 +159,55 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
                 Permissions.Leads.Update,
             #endregion
 
+            #region Pipelines and Pipeline Stages
+            GetSalesPipelinesQuery or
+            GetSalesPipelineByIdQuery or
+            GetSalesPipelineStagesQuery or
+            GetSalesPipelineStageByIdQuery or
+            GetSalesPipelineLookupQuery or
+            GetSalesPipelineStageLookupQuery =>
+                Permissions.Pipelines.View,
+
+            CreateSalesPipelineCommand or
+            CreateSalesPipelineStageCommand =>
+                Permissions.Pipelines.Create,
+
+            UpdateSalesPipelineCommand or
+            UpdateSalesPipelineStageCommand =>
+                Permissions.Pipelines.Update,
+
+            DeleteSalesPipelineCommand or
+            DeleteSalesPipelineStageCommand =>
+                Permissions.Pipelines.Delete,
+
+            #endregion
+
+            #region Opportunities
+            GetOpportunitiesQuery or
+            GetOpportunityByIdQuery =>
+                Permissions.Opportunities.View,
+
+            CreateOpportunityCommand =>
+                Permissions.Opportunities.Create,
+
+            UpdateOpportunityCommand or
+            ChangeOpportunityStageCommand or
+            MarkOpportunityAsWonCommand or
+            MarkOpportunityAsLostCommand or
+            ReopenOpportunityCommand =>
+                Permissions.Opportunities.Update,
+
+            DeleteOpportunityCommand =>
+                Permissions.Opportunities.Delete,
+            #endregion
+
+            #region Organization Users
+            GetOrganizationUserLookupQuery =>
+                Permissions.Opportunities.View,
+            #endregion
+
             _ => throw new InvalidOperationException(
-                $"No permission is configured for request type '{typeof(TRequest).Name}'.")
+                    $"No permission is configured for request type '{typeof(TRequest).Name}'.")
         };
     }
 }

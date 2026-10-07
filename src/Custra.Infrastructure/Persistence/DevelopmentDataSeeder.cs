@@ -1,5 +1,6 @@
 ﻿using Custra.Application.Common.Authorization;
 using Custra.Domain.Authorization;
+using Custra.Domain.Opportunities;
 using Custra.Domain.Organizations;
 using Custra.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -63,6 +64,9 @@ public static class DevelopmentDataSeeder
             services.GetRequiredService<OrganizationContext>();
 
         organizationContext.SetOrganization(organization.Id);
+
+        // Seed the default Sales Pipeline and its Stages
+        await SeedDefaultSalesPipelineAsync(dbContext, organization);
 
         // Seed permissions
         await SeedPermissionsAsync(dbContext);
@@ -205,8 +209,45 @@ public static class DevelopmentDataSeeder
 
             new Permission(
                 Permissions.Leads.Delete,
-                "Delete leads")
+                "Delete leads"),
 	        #endregion
+
+            #region SalesPipelines
+            new Permission(
+                Permissions.Pipelines.View,
+                "View sales pipelines"),
+
+            new Permission(
+                Permissions.Pipelines.Create,
+                "Create sales pipelines"),
+
+            new Permission(
+                Permissions.Pipelines.Update,
+                "Update sales pipelines"),
+
+            new Permission(
+                Permissions.Pipelines.Delete,
+                "Delete sales pipelines"),
+	        #endregion
+
+            #region Opportunities
+            new Permission(
+                Permissions.Opportunities.View,
+                "View opportunities"),
+
+            new Permission(
+                Permissions.Opportunities.Create,
+                "Create opportunities"),
+
+            new Permission(
+                Permissions.Opportunities.Update,
+                "Update opportunities"),
+
+            new Permission(
+                Permissions.Opportunities.Delete,
+                "Delete opportunities")
+	        #endregion
+
         };
 
         foreach (var permission in permissions)
@@ -322,6 +363,52 @@ public static class DevelopmentDataSeeder
         }
 
         await dbContext.SaveChangesAsync();
+    }
+
+    private static async Task SeedDefaultSalesPipelineAsync(
+        CustraDbContext dbContext,
+        Organization organization)
+    {
+        var pipeline = await dbContext.SalesPipelines
+            .FirstOrDefaultAsync(x =>
+                x.OrganizationId == organization.Id &&
+                x.Name == "Default Sales Pipeline");
+
+        if (pipeline is null)
+        {
+            pipeline = new SalesPipeline("Default Sales Pipeline");
+            await dbContext.SalesPipelines.AddAsync(pipeline);
+
+            var stages = new[]
+            {
+                new SalesPipelineStage(
+                    pipeline.Id,
+                    "New",
+                    1,
+                    10),
+
+                new SalesPipelineStage(
+                    pipeline.Id,
+                    "Qualified",
+                    2,
+                    30),
+
+                new SalesPipelineStage(
+                    pipeline.Id,
+                    "Proposal",
+                    3,
+                    60),
+
+                new SalesPipelineStage(
+                    pipeline.Id,
+                    "Negotiation",
+                    4,
+                    80)
+            };
+
+            await dbContext.SalesPipelineStages.AddRangeAsync(stages);
+            await dbContext.SaveChangesAsync();
+        }
     }
 
 }

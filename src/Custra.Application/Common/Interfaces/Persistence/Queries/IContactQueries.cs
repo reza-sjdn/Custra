@@ -19,4 +19,14 @@ public interface IContactQueries
         int page,
         int pageSize,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<LookupItemDto>> GetLookupByCustomerIdAsync(
+        Guid customerId,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> BelongsToCustomerAsync(
+        Guid contactId,
+        Guid customerId,
+        CancellationToken cancellationToken = default);
+
 }

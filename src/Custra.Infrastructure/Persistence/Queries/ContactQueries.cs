@@ -75,4 +75,32 @@ public sealed class ContactQueries(CustraDbContext dbContext)
             pageSize,
             totalCount);
     }
+
+    public async Task<IReadOnlyList<LookupItemDto>> GetLookupByCustomerIdAsync(
+        Guid customerId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Contacts
+            .AsNoTracking()
+            .Where(x => x.CustomerId == customerId)
+            .OrderBy(x => x.LastName)
+            .ThenBy(x => x.FirstName)
+            .Select(x => new LookupItemDto(
+                x.Id,
+                x.FirstName + " " + x.LastName))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<bool> BelongsToCustomerAsync(
+        Guid contactId,
+        Guid customerId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Contacts
+            .AsNoTracking()
+            .AnyAsync(
+                x => x.Id == contactId && x.CustomerId == customerId,
+                cancellationToken);
+    }
+
 }

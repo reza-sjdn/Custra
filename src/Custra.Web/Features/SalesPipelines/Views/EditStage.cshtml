@@ -1,0 +1,67 @@
+﻿@model EditSalesPipelineStageViewModel
+
+@{
+    ViewData["Title"] = "Edit Pipeline Stage";
+}
+
+<h2 class="mb-4">Edit Pipeline Stage</h2>
+
+<form asp-action="EditStage" method="post">
+
+    <input asp-for="Id" type="hidden" />
+    <input asp-for="SalesPipelineId" type="hidden" />
+
+    <div asp-validation-summary="ModelOnly"
+         class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+
+        <input asp-for="Name"
+               class="form-control" />
+
+        <span asp-validation-for="Name"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Order" class="form-label"></label>
+
+        <input asp-for="Order"
+               type="number"
+               min="1"
+               class="form-control" />
+
+        <span asp-validation-for="Order"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Probability" class="form-label"></label>
+
+        <input asp-for="Probability"
+               type="number"
+               min="0"
+               max="100"
+               step="0.01"
+               class="form-control" />
+
+        <span asp-validation-for="Probability"
+              class="text-danger"></span>
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+        Save Changes
+    </button>
+
+    <a asp-action="Details"
+       asp-route-id="@Model.SalesPipelineId"
+       class="btn btn-secondary">
+        Cancel
+    </a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

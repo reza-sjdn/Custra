@@ -30,4 +30,20 @@ public static class Permissions
         public const string Delete = "Leads.Delete";
     }
 
+    public static class Pipelines
+    {
+        public const string View = "Pipelines.View";
+        public const string Create = "Pipelines.Create";
+        public const string Update = "Pipelines.Update";
+        public const string Delete = "Pipelines.Delete";
+    }
+
+    public static class Opportunities
+    {
+        public const string View = "Opportunities.View";
+        public const string Create = "Opportunities.Create";
+        public const string Update = "Opportunities.Update";
+        public const string Delete = "Opportunities.Delete";
+    }
+
 }

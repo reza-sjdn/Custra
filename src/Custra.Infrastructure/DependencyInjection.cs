@@ -57,6 +57,17 @@ public static class DependencyInjection
         services.AddScoped<ILeadQueries, LeadQueries>();
         services.AddScoped<ILeadCommands, LeadCommands>();
 
+        services.AddScoped<ISalesPipelineQueries, SalesPipelineQueries>();
+        services.AddScoped<ISalesPipelineCommands, SalesPipelineCommands>();
+
+        services.AddScoped<IOpportunityQueries, OpportunityQueries>();
+        services.AddScoped<IOpportunityCommands, OpportunityCommands>();
+
+        services.AddScoped<ISalesPipelineStageQueries, SalesPipelineStageQueries>();
+        services.AddScoped<ISalesPipelineStageCommands, SalesPipelineStageCommands>();
+
+        services.AddScoped<IOrganizationUserQueries, OrganizationUserQueries>();
+
         return services;
     }
 }

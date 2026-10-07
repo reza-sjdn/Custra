@@ -1,0 +1,133 @@
+﻿@using Custra.Domain.Opportunities
+@model OpportunityListViewModel
+
+@{
+    ViewData["Title"] = "Opportunities";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Opportunities</h2>
+
+    <a asp-action="Create" class="btn btn-primary">
+        Create Opportunity
+    </a>
+</div>
+
+<form asp-action="Index" method="get" class="row g-3 mb-4">
+    <div class="col-md-5">
+        <input asp-for="Search"
+               class="form-control"
+               placeholder="Search opportunities..." />
+    </div>
+
+    <div class="col-md-3">
+        <select asp-for="Status"
+                asp-items="Html.GetEnumSelectList<OpportunityStatus>()"
+                class="form-select">
+            <option value="">All Statuses</option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-secondary w-100">
+            Search
+        </button>
+    </div>
+</form>
+
+@if (!Model.Opportunities.Any())
+{
+    <div class="alert alert-info">
+        No opportunities found.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Value</th>
+                    <th>Expected Close</th>
+                    <th>Created</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var opportunity in Model.Opportunities)
+                {
+                    <tr>
+                        <td>@opportunity.Title</td>
+
+                        <td>
+                            <span class="badge bg-secondary">
+                                @opportunity.Status
+                            </span>
+                        </td>
+
+                        <td>
+                            @(opportunity.EstimatedValue?.ToString("N2") ?? "-")
+                        </td>
+
+                        <td>
+                            @(opportunity.ExpectedCloseDate?.ToString("yyyy-MM-dd") ?? "-")
+                        </td>
+
+                        <td>
+                            @opportunity.CreatedAt.ToString("yyyy-MM-dd")
+                        </td>
+
+                        <td class="text-end">
+                            <a asp-action="Details"
+                               asp-route-id="@opportunity.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Details
+                            </a>
+
+                            <a asp-action="Edit"
+                               asp-route-id="@opportunity.Id"
+                               class="btn btn-sm btn-outline-secondary">
+                                Edit
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <nav>
+        <ul class="pagination">
+
+            <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-search="@Model.Search"
+                   asp-route-status="@Model.Status"
+                   asp-route-page="@(Model.Page - 1)">
+                    Previous
+                </a>
+            </li>
+
+            <li class="page-item disabled">
+                <span class="page-link">
+                    Page @Model.Page of @Model.TotalPages
+                </span>
+            </li>
+
+            <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-search="@Model.Search"
+                   asp-route-status="@Model.Status"
+                   asp-route-page="@(Model.Page + 1)">
+                    Next
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+}

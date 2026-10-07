@@ -61,4 +61,28 @@ public sealed class CustomerQueries(CustraDbContext dbContext)
             pageSize,
             totalCount);
     }
+
+    public async Task<bool> ExistsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Customers
+            .AsNoTracking()
+            .AnyAsync(
+                x => x.Id == id,
+                cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<LookupItemDto>> GetLookupAsync(
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Customers
+            .AsNoTracking()
+            .OrderBy(x => x.Name)
+            .Select(x => new LookupItemDto(
+                x.Id,
+                x.Name))
+            .ToListAsync(cancellationToken);
+    }
+
 }
