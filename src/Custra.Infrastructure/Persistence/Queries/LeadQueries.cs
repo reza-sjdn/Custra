@@ -88,4 +88,27 @@ public sealed class LeadQueries(CustraDbContext dbContext)
             pageSize,
             totalCount);
     }
+
+    public async Task<bool> ExistsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Leads
+            .AsNoTracking()
+            .AnyAsync(x => x.Id == id, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<LookupItemDto>> GetLookupAsync(
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Leads
+            .AsNoTracking()
+            .OrderBy(x => x.FirstName)
+            .ThenBy(x => x.LastName)
+            .Select(x => new LookupItemDto(
+                x.Id,
+                x.FirstName + " " + x.LastName))
+            .ToListAsync(cancellationToken);
+    }
+
 }

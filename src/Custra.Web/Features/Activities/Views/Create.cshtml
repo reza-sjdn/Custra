@@ -1,0 +1,196 @@
+﻿@model CreateActivityViewModel
+
+@{
+    ViewData["Title"] = "Create Activity";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Create Activity</h1>
+
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        Back to Activities
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="row g-3">
+
+                <div class="col-md-8">
+                    <label asp-for="Subject" class="form-label"></label>
+                    <input asp-for="Subject" class="form-control" />
+                    <span asp-validation-for="Subject"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Type" class="form-label"></label>
+                    <select asp-for="Type"
+                            class="form-select"
+                            asp-items="Html.GetEnumSelectList<Custra.Domain.Activities.ActivityType>()">
+                    </select>
+                    <span asp-validation-for="Type"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="OwnerUserId" class="form-label">
+                        Owner
+                    </label>
+
+                    <select asp-for="OwnerUserId"
+                            class="form-select"
+                            asp-items="@(new SelectList(Model.Owners, "Id", "Name"))">
+                        <option value="">Select owner...</option>
+                    </select>
+
+                    <span asp-validation-for="OwnerUserId"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="DueDate" class="form-label"></label>
+                    <input asp-for="DueDate"
+                           type="datetime-local"
+                           class="form-control" />
+                    <span asp-validation-for="DueDate"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="CustomerId" class="form-label">
+                        Customer
+                    </label>
+
+                    <select asp-for="CustomerId"
+                            id="CustomerId"
+                            class="form-select"
+                            asp-items="@(new SelectList(Model.Customers, "Id", "Name"))">
+                        <option value="">Select customer...</option>
+                    </select>
+
+                    <span asp-validation-for="CustomerId"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ContactId" class="form-label">
+                        Contact
+                    </label>
+
+                    <select asp-for="ContactId"
+                            id="ContactId"
+                            class="form-select"
+                            asp-items="@(new SelectList(Model.Contacts, "Id", "Name"))">
+                        <option value="">Select contact...</option>
+                    </select>
+
+                    <span asp-validation-for="ContactId"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="LeadId" class="form-label">
+                        Lead
+                    </label>
+
+                    <select asp-for="LeadId"
+                            class="form-select"
+                            asp-items="@(new SelectList(Model.Leads, "Id", "Name"))">
+                        <option value="">Select lead...</option>
+                    </select>
+
+                    <span asp-validation-for="LeadId"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="OpportunityId" class="form-label">
+                        Opportunity
+                    </label>
+
+                    <select asp-for="OpportunityId"
+                            class="form-select"
+                            asp-items="@(new SelectList(Model.Opportunities, "Id", "Name"))">
+                        <option value="">Select opportunity...</option>
+                    </select>
+
+                    <span asp-validation-for="OpportunityId"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="5"></textarea>
+                    <span asp-validation-for="Description"
+                          class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    Create Activity
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.getElementById("CustomerId")
+            .addEventListener("change", async function () {
+
+                const customerId = this.value;
+                const contactSelect = document.getElementById("ContactId");
+
+                contactSelect.innerHTML =
+                    '<option value="">Select contact...</option>';
+
+                if (!customerId) {
+                    contactSelect.disabled = true;
+                    return;
+                }
+
+                contactSelect.disabled = true;
+
+                const response = await fetch(
+                    '@Url.Action("GetContacts", "Activities")' +
+                    '?customerId=' + customerId);
+
+                if (!response.ok) {
+                    contactSelect.disabled = false;
+                    return;
+                }
+
+                const contacts = await response.json();
+
+                contacts.forEach(contact => {
+                    const option = document.createElement("option");
+
+                    option.value = contact.id;
+                    option.textContent = contact.name;
+
+                    contactSelect.appendChild(option);
+                });
+
+                contactSelect.disabled = false;
+            });
+    </script>
+}

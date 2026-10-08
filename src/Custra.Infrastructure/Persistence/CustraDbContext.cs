@@ -1,5 +1,6 @@
 ﻿using Custra.Application.Common.Interfaces;
 using Custra.Application.Common.Interfaces.Persistence;
+using Custra.Domain.Activities;
 using Custra.Domain.Authorization;
 using Custra.Domain.Common;
 using Custra.Domain.Contacts;
@@ -46,6 +47,7 @@ public class CustraDbContext
     public DbSet<SalesPipeline> SalesPipelines => Set<SalesPipeline>();
     public DbSet<SalesPipelineStage> SalesPipelineStages => Set<SalesPipelineStage>();
     public DbSet<Opportunity> Opportunities => Set<Opportunity>();
+    public DbSet<Activity> Activities => Set<Activity>();
 
     public override async Task<int> SaveChangesAsync(
         CancellationToken cancellationToken = default)

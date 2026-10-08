@@ -46,4 +46,12 @@ public static class Permissions
         public const string Delete = "Opportunities.Delete";
     }
 
+    public static class Activities
+    {
+        public const string View = "Activities.View";
+        public const string Create = "Activities.Create";
+        public const string Update = "Activities.Update";
+        public const string Delete = "Activities.Delete";
+    }
+
 }

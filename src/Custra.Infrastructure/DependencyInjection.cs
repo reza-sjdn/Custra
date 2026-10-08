@@ -68,6 +68,9 @@ public static class DependencyInjection
 
         services.AddScoped<IOrganizationUserQueries, OrganizationUserQueries>();
 
+        services.AddScoped<IActivityQueries, ActivityQueries>();
+        services.AddScoped<IActivityCommands, ActivityCommands>();
+
         return services;
     }
 }

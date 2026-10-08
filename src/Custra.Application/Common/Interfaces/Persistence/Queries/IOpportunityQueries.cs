@@ -31,4 +31,11 @@ public interface IOpportunityQueries
         Guid pipelineId,
         CancellationToken cancellationToken = default);
 
+    Task<bool> ExistsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<LookupItemDto>> GetLookupAsync(
+        CancellationToken cancellationToken = default);
+
 }

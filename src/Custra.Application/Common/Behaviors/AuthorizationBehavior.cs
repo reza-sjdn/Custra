@@ -1,4 +1,12 @@
 ﻿#region Usings
+using Custra.Application.Activities.Commands.CancelActivity;
+using Custra.Application.Activities.Commands.CompleteActivity;
+using Custra.Application.Activities.Commands.CreateActivity;
+using Custra.Application.Activities.Commands.DeleteActivity;
+using Custra.Application.Activities.Commands.ReopenActivity;
+using Custra.Application.Activities.Commands.UpdateActivity;
+using Custra.Application.Activities.Queries.GetActivities;
+using Custra.Application.Activities.Queries.GetActivityById;
 using Custra.Application.Common.Authorization;
 using Custra.Application.Common.Exceptions;
 using Custra.Application.Common.Interfaces;
@@ -20,6 +28,7 @@ using Custra.Application.Leads.Commands.CreateLead;
 using Custra.Application.Leads.Commands.DeleteLead;
 using Custra.Application.Leads.Commands.UpdateLead;
 using Custra.Application.Leads.Queries.GetLeadById;
+using Custra.Application.Leads.Queries.GetLeadLookup;
 using Custra.Application.Leads.Queries.GetLeads;
 using Custra.Application.Opportunities.Commands.ChangeOpportunityStage;
 using Custra.Application.Opportunities.Commands.CreateOpportunity;
@@ -30,6 +39,7 @@ using Custra.Application.Opportunities.Commands.ReopenOpportunity;
 using Custra.Application.Opportunities.Commands.UpdateOpportunity;
 using Custra.Application.Opportunities.Queries.GetOpportunities;
 using Custra.Application.Opportunities.Queries.GetOpportunityById;
+using Custra.Application.Opportunities.Queries.GetOpportunityLookup;
 using Custra.Application.OrganizationUsers.Queries.GetOrganizationUserLookup;
 using Custra.Application.SalesPipelines.Commands.CreateSalesPipeline;
 using Custra.Application.SalesPipelines.Commands.DeleteSalesPipeline;
@@ -140,23 +150,20 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
             #endregion
 
             #region Leads
-            GetLeadByIdQuery =>
-                Permissions.Leads.View,
-
-            GetLeadsQuery =>
+            GetLeadsQuery or
+            GetLeadByIdQuery or
+            GetLeadLookupQuery =>
                 Permissions.Leads.View,
 
             CreateLeadCommand =>
                 Permissions.Leads.Create,
 
-            UpdateLeadCommand =>
+            UpdateLeadCommand or
+            ChangeLeadStatusCommand =>
                 Permissions.Leads.Update,
 
             DeleteLeadCommand =>
                 Permissions.Leads.Delete,
-
-            ChangeLeadStatusCommand =>
-                Permissions.Leads.Update,
             #endregion
 
             #region Pipelines and Pipeline Stages
@@ -184,7 +191,8 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
 
             #region Opportunities
             GetOpportunitiesQuery or
-            GetOpportunityByIdQuery =>
+            GetOpportunityByIdQuery or
+            GetOpportunityLookupQuery =>
                 Permissions.Opportunities.View,
 
             CreateOpportunityCommand =>
@@ -204,6 +212,24 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
             #region Organization Users
             GetOrganizationUserLookupQuery =>
                 Permissions.Opportunities.View,
+            #endregion
+
+            #region Activities
+            CreateActivityCommand =>
+                Permissions.Activities.Create,
+
+            GetActivitiesQuery or
+            GetActivityByIdQuery =>
+                Permissions.Activities.View,
+
+            UpdateActivityCommand or
+            CompleteActivityCommand or
+            CancelActivityCommand or
+            ReopenActivityCommand =>
+                Permissions.Activities.Update,
+
+            DeleteActivityCommand =>
+                Permissions.Activities.Delete,
             #endregion
 
             _ => throw new InvalidOperationException(

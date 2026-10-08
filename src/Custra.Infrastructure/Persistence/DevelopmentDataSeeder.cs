@@ -245,8 +245,26 @@ public static class DevelopmentDataSeeder
 
             new Permission(
                 Permissions.Opportunities.Delete,
-                "Delete opportunities")
-	        #endregion
+                "Delete opportunities"),
+            #endregion
+
+            #region Activities
+            new Permission(
+                Permissions.Activities.View,
+                "View activities"),
+
+            new Permission(
+                Permissions.Activities.Create,
+                "Create activities"),
+
+            new Permission(
+                Permissions.Activities.Update,
+                "Update activities"),
+
+            new Permission(
+                Permissions.Activities.Delete,
+                "Delete activities")
+            #endregion
 
         };
 

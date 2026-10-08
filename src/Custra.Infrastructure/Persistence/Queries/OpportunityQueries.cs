@@ -134,4 +134,23 @@ public sealed class OpportunityQueries : IOpportunityQueries
                 cancellationToken);
     }
 
+    public async Task<bool> ExistsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Opportunities
+            .AsNoTracking()
+            .AnyAsync(x => x.Id == id, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<LookupItemDto>> GetLookupAsync(
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Opportunities
+            .AsNoTracking()
+            .OrderBy(x => x.Title)
+            .Select(x => new LookupItemDto(x.Id, x.Title))
+            .ToListAsync(cancellationToken);
+    }
+
 }
