@@ -48,7 +48,7 @@ public sealed class AccountController : Controller
 
             return RedirectToAction(
                 "Index",
-                "Home");
+                "Dashboard");
         }
 
         ModelState.AddModelError(

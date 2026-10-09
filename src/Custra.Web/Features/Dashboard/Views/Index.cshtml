@@ -1,0 +1,274 @@
+﻿@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    var summary = Model.Summary;
+}
+
+<div class="mb-4">
+    <h1>Dashboard</h1>
+    <p class="text-muted mb-0">Your sales activity at a glance.</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="text-muted small">Customers</div>
+                <div class="fs-3 fw-semibold">@summary.TotalCustomers</div>
+                <a asp-controller="Customers" asp-action="Index"
+                   class="small">View customers</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="text-muted small">Open Opportunities</div>
+                <div class="fs-3 fw-semibold">@summary.OpenOpportunities</div>
+                <a asp-controller="Opportunities" asp-action="Index"
+                   asp-route-Status="Open" class="small">View opportunities</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="text-muted small">Open Pipeline Value</div>
+                <div class="fs-3 fw-semibold">
+                    @summary.PipelineValue.ToString("N0")
+                </div>
+                <span class="text-muted small">Estimated value</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="text-muted small">Overdue Activities</div>
+                <div class="fs-3 fw-semibold">@summary.OverdueActivities</div>
+                <a asp-controller="Activities" asp-action="Index"
+                   class="small">Review activities</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="text-muted small">Won Opportunities</div>
+                <div class="fs-3 fw-semibold text-success">
+                    @summary.WonOpportunities
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="text-muted small">Lost Opportunities</div>
+                <div class="fs-3 fw-semibold text-danger">
+                    @summary.LostOpportunities
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="text-muted small">Open Activities</div>
+                <div class="fs-3 fw-semibold">@summary.OpenActivities</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="text-muted small">Lead Statuses</div>
+                <div class="fs-3 fw-semibold">@Model.LeadsByStatus.Sum(x => x.Count)</div>
+                <a asp-controller="Leads" asp-action="Index"
+                   class="small">View leads</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Leads by Status</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.LeadsByStatus.Count == 0)
+                {
+                    <p class="text-muted mb-0">No leads found.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th class="text-end">Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.LeadsByStatus)
+                                {
+                                    <tr>
+                                        <td>@item.Status</td>
+                                        <td class="text-end">@item.Count</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Open Opportunities by Stage</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.OpportunitiesByStage.Count == 0)
+                {
+                    <p class="text-muted mb-0">No open opportunities found.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Stage</th>
+                                    <th class="text-end">Count</th>
+                                    <th class="text-end">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OpportunitiesByStage)
+                                {
+                                    <tr>
+                                        <td>@item.StageName</td>
+                                        <td class="text-end">@item.Count</td>
+                                        <td class="text-end">@item.TotalValue.ToString("N0")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Activities</h5>
+                <a asp-controller="Activities" asp-action="Index"
+                   class="small">View all</a>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.RecentActivities.Count == 0)
+                {
+                    <p class="text-muted p-3 mb-0">No activities found.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Status</th>
+                                    <th>Owner</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var activity in Model.RecentActivities)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a asp-controller="Activities"
+                                               asp-action="Details"
+                                               asp-route-id="@activity.Id">
+                                                @activity.Subject
+                                            </a>
+                                        </td>
+                                        <td>@activity.Status</td>
+                                        <td>@activity.OwnerName</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Upcoming Activities</h5>
+                <a asp-controller="Activities" asp-action="Index"
+                   class="small">View all</a>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.UpcomingActivities.Count == 0)
+                {
+                    <p class="text-muted p-3 mb-0">No upcoming activities.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Due Date</th>
+                                    <th>Owner</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var activity in Model.UpcomingActivities)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a asp-controller="Activities"
+                                               asp-action="Details"
+                                               asp-route-id="@activity.Id">
+                                                @activity.Subject
+                                            </a>
+                                        </td>
+                                        <td>
+                                            @activity.DueDate?.ToString("yyyy-MM-dd HH:mm")
+                                        </td>
+                                        <td>@activity.OwnerName</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

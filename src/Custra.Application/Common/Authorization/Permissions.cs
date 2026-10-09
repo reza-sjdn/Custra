@@ -54,4 +54,9 @@ public static class Permissions
         public const string Delete = "Activities.Delete";
     }
 
+    public static class Dashboard
+    {
+        public const string View = "Dashboard.View";
+    }
+
 }

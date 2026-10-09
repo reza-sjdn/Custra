@@ -23,6 +23,7 @@ using Custra.Application.Customers.Commands.UpdateCustomer;
 using Custra.Application.Customers.Queries.GetCustomerById;
 using Custra.Application.Customers.Queries.GetCustomerLookup;
 using Custra.Application.Customers.Queries.GetCustomers;
+using Custra.Application.Dashboard.Queries.GetDashboard;
 using Custra.Application.Leads.Commands.ChangeLeadStatus;
 using Custra.Application.Leads.Commands.CreateLead;
 using Custra.Application.Leads.Commands.DeleteLead;
@@ -230,6 +231,11 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
 
             DeleteActivityCommand =>
                 Permissions.Activities.Delete,
+            #endregion
+
+            #region
+            GetDashboardQuery =>
+                Permissions.Dashboard.View,
             #endregion
 
             _ => throw new InvalidOperationException(
