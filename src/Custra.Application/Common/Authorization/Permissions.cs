@@ -67,4 +67,12 @@ public static class Permissions
         public const string Delete = "Tasks.Delete";
     }
 
+    public static class Notes
+    {
+        public const string View = "Notes.View";
+        public const string Create = "Notes.Create";
+        public const string Update = "Notes.Update";
+        public const string Delete = "Notes.Delete";
+    }
+
 }

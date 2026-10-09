@@ -1,0 +1,83 @@
+﻿@model NoteListViewModel
+
+<h2>Notes</h2>
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-primary">Create Note</a>
+</div>
+
+<form asp-action="Index" method="get" class="row g-2 mb-3">
+    <div class="col-md-6">
+        <input asp-for="Search" name="search" class="form-control"
+               placeholder="Search notes..." />
+    </div>
+    <input type="hidden" name="pageSize" value="@Model.PageSize" />
+    <div class="col-auto">
+        <button type="submit" class="btn btn-secondary">Search</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Customer</th>
+            <th>Contact</th>
+            <th>Lead</th>
+            <th>Opportunity</th>
+            <th>Created</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var note in Model.Items)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Details" asp-route-id="@note.Id">
+                        @note.Title
+                    </a>
+                </td>
+                <td>@note.CustomerName</td>
+                <td>@note.ContactName</td>
+                <td>@note.LeadName</td>
+                <td>@note.OpportunityTitle</td>
+                <td>@note.CreatedAt.ToString("yyyy-MM-dd")</td>
+                <td class="text-nowrap">
+                    <a asp-action="Edit" asp-route-id="@note.Id"
+                       class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-action="DeleteConfirmation" asp-route-id="@note.Id"
+                       class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalCount == 0)
+{
+    <p>No notes found.</p>
+}
+
+<div class="d-flex align-items-center gap-3">
+    <span>Page @Model.Page of @Math.Max(1, Model.TotalPages)</span>
+
+    @if (Model.Page > 1)
+    {
+        <a asp-action="Index"
+           asp-route-search="@Model.Search"
+           asp-route-page="@(Model.Page - 1)"
+           asp-route-pageSize="@Model.PageSize"
+           class="btn btn-outline-secondary">Previous</a>
+    }
+
+    @if (Model.Page < Model.TotalPages)
+    {
+        <a asp-action="Index"
+           asp-route-search="@Model.Search"
+           asp-route-page="@(Model.Page + 1)"
+           asp-route-pageSize="@Model.PageSize"
+           class="btn btn-outline-secondary">Next</a>
+    }
+</div>

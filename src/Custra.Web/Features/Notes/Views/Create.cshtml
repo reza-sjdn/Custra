@@ -1,0 +1,85 @@
+﻿@model NoteFormViewModel
+
+<h2>Create Note</h2>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" maxlength="200" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Content" class="form-label"></label>
+        <textarea asp-for="Content" class="form-control" rows="6"
+                  maxlength="10000"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CustomerId" class="form-label">Customer</label>
+        <select asp-for="CustomerId" asp-items="Model.Customers"
+                class="form-select" id="customerSelect">
+            <option value="">-- No customer --</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ContactId" class="form-label">Contact</label>
+        <select asp-for="ContactId" asp-items="Model.Contacts"
+                class="form-select" id="contactSelect">
+            <option value="">-- No contact --</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LeadId" class="form-label">Lead</label>
+        <select asp-for="LeadId" asp-items="Model.Leads" class="form-select">
+            <option value="">-- No lead --</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="OpportunityId" class="form-label">Opportunity</label>
+        <select asp-for="OpportunityId" asp-items="Model.Opportunities"
+                class="form-select">
+            <option value="">-- No opportunity --</option>
+        </select>
+    </div>
+
+    <p class="text-muted">
+        Associate the note with at least one CRM record.
+    </p>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(function () {
+            $("#customerSelect").on("change", function () {
+                const customerId = $(this).val();
+                const contactSelect = $("#contactSelect");
+
+                contactSelect.empty()
+                    .append(new Option("-- No contact --", ""));
+
+                if (!customerId) return;
+
+                $.getJSON('@Url.Action("GetContacts", "Notes")',
+                    { customerId: customerId })
+                    .done(function (contacts) {
+                        contacts.forEach(function (contact) {
+                            contactSelect.append(
+                                new Option(contact.name, contact.id));
+                        });
+                    });
+            });
+        });
+    </script>
+}

@@ -6,6 +6,7 @@ using Custra.Domain.Common;
 using Custra.Domain.Contacts;
 using Custra.Domain.Customers;
 using Custra.Domain.Leads;
+using Custra.Domain.Notes;
 using Custra.Domain.Opportunities;
 using Custra.Domain.Organizations;
 using Custra.Domain.Tasks;
@@ -50,6 +51,7 @@ public class CustraDbContext
     public DbSet<Opportunity> Opportunities => Set<Opportunity>();
     public DbSet<Activity> Activities => Set<Activity>();
     public DbSet<TaskItem> Tasks => Set<TaskItem>();
+    public DbSet<Note> Notes => Set<Note>();
 
     public override async Task<int> SaveChangesAsync(
         CancellationToken cancellationToken = default)

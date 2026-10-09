@@ -31,6 +31,11 @@ using Custra.Application.Leads.Commands.UpdateLead;
 using Custra.Application.Leads.Queries.GetLeadById;
 using Custra.Application.Leads.Queries.GetLeadLookup;
 using Custra.Application.Leads.Queries.GetLeads;
+using Custra.Application.Notes.Commands.CreateNote;
+using Custra.Application.Notes.Commands.DeleteNote;
+using Custra.Application.Notes.Commands.UpdateNote;
+using Custra.Application.Notes.Queries.GetNoteById;
+using Custra.Application.Notes.Queries.GetNotes;
 using Custra.Application.Opportunities.Commands.ChangeOpportunityStage;
 using Custra.Application.Opportunities.Commands.CreateOpportunity;
 using Custra.Application.Opportunities.Commands.DeleteOpportunity;
@@ -263,7 +268,22 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
                 Permissions.Tasks.Delete,
             #endregion
 
-            #region
+            #region Notes
+            GetNotesQuery or
+            GetNoteByIdQuery =>
+                Permissions.Notes.View,
+
+            CreateNoteCommand =>
+                Permissions.Notes.Create,
+
+            UpdateNoteCommand =>
+                Permissions.Notes.Update,
+
+            DeleteNoteCommand =>
+                Permissions.Notes.Delete,
+            #endregion
+
+            #region Dashboard
             GetDashboardQuery =>
                 Permissions.Dashboard.View,
             #endregion
