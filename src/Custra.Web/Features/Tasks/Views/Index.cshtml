@@ -1,0 +1,160 @@
+﻿@model TaskItemListViewModel
+
+@{
+    ViewData["Title"] = "Tasks";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Tasks</h1>
+    <a asp-action="Create" class="btn btn-primary">Create Task</a>
+</div>
+
+@if (TempData["SuccessMessage"] is string message)
+{
+    <div class="alert alert-success">@message</div>
+}
+
+<form method="get" asp-action="Index" class="card card-body mb-4">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label" for="search">Search</label>
+            <input id="search" name="search" value="@Model.Search"
+                   class="form-control" placeholder="Title, description, owner..." />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label" for="status">Status</label>
+            <select id="status" name="status" class="form-select">
+                <option value="">All statuses</option>
+                @foreach (var item in Html.GetEnumSelectList<Custra.Domain.Tasks.TaskItemStatus>())
+                {
+                    <option value="@item.Value"
+                            selected="@(Model.Status.HasValue && item.Value == ((int)Model.Status.Value).ToString())">
+                        @item.Text
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label" for="priority">Priority</label>
+            <select id="priority" name="priority" class="form-select">
+                <option value="">All priorities</option>
+                @foreach (var item in Html.GetEnumSelectList<Custra.Domain.Tasks.TaskItemPriority>())
+                {
+                    <option value="@item.Value"
+                            selected="@(Model.Priority.HasValue && item.Value == ((int)Model.Priority.Value).ToString())">
+                        @item.Text
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end gap-2">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </div>
+
+    <input type="hidden" name="pageSize" value="@Model.PageSize" />
+</form>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Owner</th>
+                <th>Due date</th>
+                <th>Related record</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Items.Count == 0)
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        No tasks found.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var task in Model.Items)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@task.Id">
+                                @task.Title
+                            </a>
+                        </td>
+                        <td>@task.Priority</td>
+                        <td>@task.Status</td>
+                        <td>@task.OwnerName</td>
+                        <td>
+                            @if (task.DueDate.HasValue)
+                            {
+                                @task.DueDate.Value.ToString("yyyy-MM-dd HH:mm")
+                            }
+                            else
+                            {
+                                <span class="text-muted">—</span>
+                            }
+                        </td>
+                        <td>
+                            @(
+                                                task.OpportunityTitle
+                                                ?? task.LeadName
+                                                ?? task.ContactName
+                                                ?? task.CustomerName
+                                                ?? task.ActivitySubject
+                                                ?? "—"
+                                                )
+                        </td>
+                        <td class="text-nowrap">
+                            <a asp-action="Edit" asp-route-id="@task.Id"
+                               class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a asp-action="DeleteConfirmation" asp-route-id="@task.Id"
+                               class="btn btn-sm btn-outline-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex justify-content-between align-items-center">
+    <span class="text-muted">
+        @Model.TotalCount task(s)
+    </span>
+
+    <div class="btn-group">
+        <a asp-action="Index"
+           asp-route-search="@Model.Search"
+           asp-route-status="@Model.Status"
+           asp-route-priority="@Model.Priority"
+           asp-route-pageSize="@Model.PageSize"
+           asp-route-page="@(Model.Page - 1)"
+           class="btn btn-outline-secondary @(Model.Page <= 1 ? "disabled" : "")">
+            Previous
+        </a>
+
+        <span class="btn btn-outline-secondary disabled">
+            Page @Model.Page of @Math.Max(1, Model.TotalPages)
+        </span>
+
+        <a asp-action="Index"
+           asp-route-search="@Model.Search"
+           asp-route-status="@Model.Status"
+           asp-route-priority="@Model.Priority"
+           asp-route-pageSize="@Model.PageSize"
+           asp-route-page="@(Model.Page + 1)"
+           class="btn btn-outline-secondary @(Model.Page >= Model.TotalPages ? "disabled" : "")">
+            Next
+        </a>
+    </div>
+</div>

@@ -54,6 +54,16 @@ using Custra.Application.SalesPipelineStages.Commands.UpdateSalesPipelineStage;
 using Custra.Application.SalesPipelineStages.Queries.GetSalesPipelineStageById;
 using Custra.Application.SalesPipelineStages.Queries.GetSalesPipelineStageLookup;
 using Custra.Application.SalesPipelineStages.Queries.GetSalesPipelineStages;
+using Custra.Application.Tasks.Commands.CancelTaskItem;
+using Custra.Application.Tasks.Commands.CompleteTaskItem;
+using Custra.Application.Tasks.Commands.CreateTaskItem;
+using Custra.Application.Tasks.Commands.DeleteTaskItem;
+using Custra.Application.Tasks.Commands.ReopenTaskItem;
+using Custra.Application.Tasks.Commands.StartTaskItem;
+using Custra.Application.Tasks.Commands.UpdateTaskItem;
+using Custra.Application.Tasks.Queries.GetTaskItemById;
+using Custra.Application.Tasks.Queries.GetTaskItemLookup;
+using Custra.Application.Tasks.Queries.GetTaskItems;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -231,6 +241,26 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
 
             DeleteActivityCommand =>
                 Permissions.Activities.Delete,
+            #endregion
+
+            #region Tasks
+            CreateTaskItemCommand =>
+                Permissions.Tasks.Create,
+
+            GetTaskItemsQuery or
+            GetTaskItemByIdQuery or
+            GetTaskItemLookupQuery =>
+                Permissions.Tasks.View,
+
+            UpdateTaskItemCommand or
+            StartTaskItemCommand or
+            CompleteTaskItemCommand or
+            ReopenTaskItemCommand or
+            CancelTaskItemCommand =>
+                Permissions.Tasks.Update,
+
+            DeleteTaskItemCommand =>
+                Permissions.Tasks.Delete,
             #endregion
 
             #region

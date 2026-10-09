@@ -73,6 +73,9 @@ public static class DependencyInjection
 
         services.AddScoped<IDashboardQueries, DashboardQueries>();
 
+        services.AddScoped<ITaskItemQueries, TaskItemQueries>();
+        services.AddScoped<ITaskItemCommands, TaskItemCommands>();
+
         return services;
     }
 }

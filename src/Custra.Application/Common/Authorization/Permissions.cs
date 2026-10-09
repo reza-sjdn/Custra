@@ -59,4 +59,12 @@ public static class Permissions
         public const string View = "Dashboard.View";
     }
 
+    public static class Tasks
+    {
+        public const string View = "Tasks.View";
+        public const string Create = "Tasks.Create";
+        public const string Update = "Tasks.Update";
+        public const string Delete = "Tasks.Delete";
+    }
+
 }

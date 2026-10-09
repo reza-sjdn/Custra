@@ -266,10 +266,28 @@ public static class DevelopmentDataSeeder
                 "Delete activities"),
             #endregion
 
-            #region
+            #region Dashboard
             new Permission(
                 Permissions.Dashboard.View,
                 "View dashboard"),
+            #endregion
+
+            #region Tasks
+            new Permission(
+                Permissions.Tasks.View,
+                "View tasks"),
+
+            new Permission(
+                Permissions.Tasks.Create,
+                "Create tasks"),
+
+            new Permission(
+                Permissions.Tasks.Update,
+                "Update tasks"),
+
+            new Permission(
+                Permissions.Tasks.Delete,
+                "Delete tasks"),
             #endregion
 
         };

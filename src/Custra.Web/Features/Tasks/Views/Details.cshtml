@@ -1,0 +1,103 @@
+﻿@model TaskItemViewModel
+
+@{
+    ViewData["Title"] = "Task Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Task Details</h1>
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.Id"
+           class="btn btn-outline-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to Tasks</a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] is string message)
+{
+    <div class="alert alert-success">@message</div>
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">@Model.Title</h5>
+        <span class="badge bg-secondary">@Model.Status</span>
+    </div>
+
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@(Model.Description ?? "—")</dd>
+
+            <dt class="col-sm-3">Priority</dt>
+            <dd class="col-sm-9">@Model.Priority</dd>
+
+            <dt class="col-sm-3">Owner</dt>
+            <dd class="col-sm-9">@Model.OwnerName</dd>
+
+            <dt class="col-sm-3">Due date</dt>
+            <dd class="col-sm-9">
+                @(Model.DueDate?.ToString("yyyy-MM-dd HH:mm") ?? "—")
+            </dd>
+
+            <dt class="col-sm-3">Completed at</dt>
+            <dd class="col-sm-9">
+                @(Model.CompletedAt?.ToString("yyyy-MM-dd HH:mm") ?? "—")
+            </dd>
+
+            <dt class="col-sm-3">Customer</dt>
+            <dd class="col-sm-9">@(Model.CustomerName ?? "—")</dd>
+
+            <dt class="col-sm-3">Contact</dt>
+            <dd class="col-sm-9">@(Model.ContactName ?? "—")</dd>
+
+            <dt class="col-sm-3">Lead</dt>
+            <dd class="col-sm-9">@(Model.LeadName ?? "—")</dd>
+
+            <dt class="col-sm-3">Opportunity</dt>
+            <dd class="col-sm-9">@(Model.OpportunityTitle ?? "—")</dd>
+
+            <dt class="col-sm-3">Activity</dt>
+            <dd class="col-sm-9">@(Model.ActivitySubject ?? "—")</dd>
+
+            <dt class="col-sm-3">Created at</dt>
+            <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+        </dl>
+    </div>
+
+    <div class="card-footer d-flex flex-wrap gap-2">
+        @if (Model.Status == Custra.Domain.Tasks.TaskItemStatus.NotStarted)
+        {
+            <form asp-action="Start" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button class="btn btn-primary" type="submit">Start Task</button>
+            </form>
+        }
+
+        @if (Model.Status is Custra.Domain.Tasks.TaskItemStatus.NotStarted
+                or Custra.Domain.Tasks.TaskItemStatus.InProgress)
+        {
+            <form asp-action="Complete" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button class="btn btn-success" type="submit">Complete Task</button>
+            </form>
+
+            <form asp-action="Cancel" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button class="btn btn-outline-danger" type="submit">Cancel Task</button>
+            </form>
+        }
+
+        @if (Model.Status is Custra.Domain.Tasks.TaskItemStatus.Completed
+                or Custra.Domain.Tasks.TaskItemStatus.Cancelled)
+        {
+            <form asp-action="Reopen" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button class="btn btn-warning" type="submit">Reopen Task</button>
+            </form>
+        }
+
+        <a asp-action="DeleteConfirmation" asp-route-id="@Model.Id"
+           class="btn btn-outline-danger">Delete</a>
+    </div>
+</div>
