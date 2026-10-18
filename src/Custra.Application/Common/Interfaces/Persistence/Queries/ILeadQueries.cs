@@ -15,6 +15,7 @@ public interface ILeadQueries
 
     Task<PagedResult<LeadDto>> GetPagedAsync(
         string? search,
+        Guid? tagId,
         LeadStatus? status,
         int page,
         int pageSize,

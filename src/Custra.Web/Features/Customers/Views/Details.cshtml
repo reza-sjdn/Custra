@@ -7,7 +7,10 @@
 <div class="container py-4">
     <h1 class="mb-4">Customer Details</h1>
 
-    <dl class="row">
+    <partial name="~/Features/Tags/Views/_Assignments.cshtml"
+             model="Model.TagAssignments" />
+
+    <dl class="row mt-4">
         <dt class="col-sm-3">Name</dt>
         <dd class="col-sm-9">@Model.Name</dd>
 

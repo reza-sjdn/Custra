@@ -34,6 +34,7 @@ public sealed class ContactQueries(CustraDbContext dbContext)
     public async Task<PagedResult<ContactDto>> GetPagedAsync(
         Guid customerId,
         string? search,
+        Guid? tagId,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default)
@@ -50,6 +51,14 @@ public sealed class ContactQueries(CustraDbContext dbContext)
                 x.FirstName.Contains(search) ||
                 x.LastName.Contains(search) ||
                 (x.Email != null && x.Email.Contains(search)));
+        }
+
+        if (tagId.HasValue)
+        {
+            query = query.Where(contact =>
+                _dbContext.ContactTags.Any(contactTag =>
+                    contactTag.ContactId == contact.Id &&
+                    contactTag.TagId == tagId.Value));
         }
 
         var totalCount = await query.CountAsync(cancellationToken);
@@ -101,6 +110,15 @@ public sealed class ContactQueries(CustraDbContext dbContext)
             .AnyAsync(
                 x => x.Id == contactId && x.CustomerId == customerId,
                 cancellationToken);
+    }
+
+    public async Task<bool> ExistsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Contacts
+            .AsNoTracking()
+            .AnyAsync(x => x.Id == id, cancellationToken);
     }
 
 }

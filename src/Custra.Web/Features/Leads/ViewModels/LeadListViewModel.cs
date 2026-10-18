@@ -1,4 +1,5 @@
 ﻿using Custra.Domain.Leads;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Custra.Web.Features.Leads.ViewModels;
 
@@ -16,4 +17,7 @@ public sealed class LeadListViewModel
 
     public bool HasPreviousPage => Page > 1;
     public bool HasNextPage => Page < TotalPages;
+    public Guid? TagId { get; set; }
+    public IReadOnlyList<SelectListItem> AvailableTags { get; set; }
+        = Array.Empty<SelectListItem>();
 }

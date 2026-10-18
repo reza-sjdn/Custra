@@ -13,11 +13,14 @@ using Custra.Application.Opportunities.Queries.GetOpportunityById;
 using Custra.Application.OrganizationUsers.Queries.GetOrganizationUserLookup;
 using Custra.Application.SalesPipelines.Queries.GetSalesPipelineLookup;
 using Custra.Application.SalesPipelineStages.Queries.GetSalesPipelineStageLookup;
+using Custra.Application.Tags.Queries.GetTagLookup;
 using Custra.Domain.Opportunities;
 using Custra.Web.Common.ViewModels;
 using Custra.Web.Features.Opportunities.ViewModels;
+using Custra.Web.Features.Tags.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Custra.Web.Features.Opportunities;
 
@@ -25,23 +28,30 @@ public class OpportunitiesController : Controller
 {
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
+    private readonly ITagAssignmentViewModelService _tagAssignmentViewModelService;
 
     public OpportunitiesController(
         IMediator mediator,
-        IMapper mapper)
+        IMapper mapper,
+        ITagAssignmentViewModelService tagAssignmentViewModelService)
     {
         _mediator = mediator;
         _mapper = mapper;
+        _tagAssignmentViewModelService = tagAssignmentViewModelService;
     }
 
     public async Task<IActionResult> Index(
         string? search,
+        Guid? tagId,
         OpportunityStatus? status,
         int page = 1)
     {
+        var tags = await _mediator.Send(new GetTagLookupQuery());
+
         var result = await _mediator.Send(
             new GetOpportunitiesQuery(
                 Search: search,
+                TagId: tagId,
                 Status: status,
                 Page: page));
 
@@ -55,6 +65,11 @@ public class OpportunitiesController : Controller
             TotalCount = result.TotalCount,
             TotalPages = result.TotalPages
         };
+
+        model.TagId = tagId;
+        model.AvailableTags = tags
+            .Select(tag => new SelectListItem(tag.Name, tag.Id.ToString()))
+            .ToList();
 
         return View(model);
     }
@@ -104,6 +119,9 @@ public class OpportunitiesController : Controller
             new GetOpportunityByIdQuery(id));
 
         var model = _mapper.Map<OpportunityViewModel>(opportunity);
+
+        model.TagAssignments = await _tagAssignmentViewModelService
+            .PopulateAsync("Opportunity", id);
 
         return View(model);
     }

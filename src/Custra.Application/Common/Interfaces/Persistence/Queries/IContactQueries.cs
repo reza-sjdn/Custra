@@ -16,6 +16,7 @@ public interface IContactQueries
     Task<PagedResult<ContactDto>> GetPagedAsync(
         Guid customerId,
         string? search,
+        Guid? tagId,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default);
@@ -27,6 +28,10 @@ public interface IContactQueries
     Task<bool> BelongsToCustomerAsync(
         Guid contactId,
         Guid customerId,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> ExistsAsync(
+        Guid id,
         CancellationToken cancellationToken = default);
 
 }

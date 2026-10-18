@@ -1,0 +1,39 @@
+﻿@model TagAssignmentViewModel
+
+<h4>Tags</h4>
+
+<div class="d-flex flex-wrap gap-2 mb-3">
+    @foreach (var tag in Model.AssignedTags)
+    {
+        <form asp-controller="Tags" asp-action="RemoveAssignment" method="post">
+            <input type="hidden" name="recordType" value="@Model.RecordType" />
+            <input type="hidden" name="recordId" value="@Model.RecordId" />
+            <input type="hidden" name="tagId" value="@tag.TagId" />
+
+            <span class="badge" style="background-color: @tag.Color">
+                @tag.Name
+            </span>
+
+            <button type="submit" class="btn btn-sm btn-outline-danger"
+                    title="Remove tag" aria-label="Remove @tag.Name">
+                ×
+            </button>
+        </form>
+    }
+</div>
+
+<form asp-controller="Tags" asp-action="Assign" method="post"
+      class="d-flex gap-2">
+    <input type="hidden" name="recordType" value="@Model.RecordType" />
+    <input type="hidden" name="recordId" value="@Model.RecordId" />
+
+    <select name="tagId" class="form-select" required>
+        <option value="">Select a tag...</option>
+        @foreach (var tag in Model.AvailableTags)
+        {
+            <option value="@tag.Value">@tag.Text</option>
+        }
+    </select>
+
+    <button type="submit" class="btn btn-primary">Assign</button>
+</form>

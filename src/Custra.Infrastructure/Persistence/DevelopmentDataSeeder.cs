@@ -308,6 +308,29 @@ public static class DevelopmentDataSeeder
                 "Delete notes"),
             #endregion
 
+            #region Tags
+            new Permission(
+                Permissions.Tags.View,
+                "View tags"),
+
+            new Permission(
+                Permissions.Tags.Create,
+                "Create tags"),
+
+            new Permission(
+                Permissions.Tags.Update,
+                "Update tags"),
+
+            new Permission(
+                Permissions.Tags.Delete,
+                "Delete tags"),
+
+            new Permission(
+                Permissions.Tags.Assign,
+                "Assign and Remove Assignment of tags"),
+            #endregion
+
+
         };
 
         foreach (var permission in permissions)

@@ -10,7 +10,8 @@ using System.Text;
 namespace Custra.Application.Opportunities.Queries.GetOpportunities;
 
 public sealed record GetOpportunitiesQuery(
-    string? Search = null,
+    string? Search,
+    Guid? TagId,
     OpportunityStatus? Status = null,
     Guid? CustomerId = null,
     Guid? OwnerUserId = null,

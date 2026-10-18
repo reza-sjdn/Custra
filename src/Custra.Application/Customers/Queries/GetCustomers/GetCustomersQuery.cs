@@ -10,7 +10,9 @@ namespace Custra.Application.Customers.Queries.GetCustomers;
 
 public sealed record GetCustomersQuery(
     string? Search,
+    Guid? TagId,
     int Page = 1,
-    int PageSize = 2)
+    int PageSize = 10
+    )
     : IQuery<PagedResult<CustomerDto>>,
       IAuthorizationRequest;

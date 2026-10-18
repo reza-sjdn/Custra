@@ -625,6 +625,201 @@ namespace Custra.Infrastructure.Migrations
                     b.ToTable("OrganizationMemberships");
                 });
 
+            modelBuilder.Entity("Custra.Domain.Tags.ContactTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ContactId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContactId");
+
+                    b.HasIndex("TagId");
+
+                    b.HasIndex("OrganizationId", "ContactId", "TagId")
+                        .IsUnique();
+
+                    b.ToTable("ContactTags", (string)null);
+                });
+
+            modelBuilder.Entity("Custra.Domain.Tags.CustomerTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("TagId");
+
+                    b.HasIndex("OrganizationId", "CustomerId", "TagId")
+                        .IsUnique();
+
+                    b.ToTable("CustomerTags", (string)null);
+                });
+
+            modelBuilder.Entity("Custra.Domain.Tags.LeadTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("LeadId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LeadId");
+
+                    b.HasIndex("TagId");
+
+                    b.HasIndex("OrganizationId", "LeadId", "TagId")
+                        .IsUnique();
+
+                    b.ToTable("LeadTags", (string)null);
+                });
+
+            modelBuilder.Entity("Custra.Domain.Tags.OpportunityTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OpportunityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OpportunityId");
+
+                    b.HasIndex("TagId");
+
+                    b.HasIndex("OrganizationId", "OpportunityId", "TagId")
+                        .IsUnique();
+
+                    b.ToTable("OpportunityTags", (string)null);
+                });
+
+            modelBuilder.Entity("Custra.Domain.Tags.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrganizationId", "Name")
+                        .IsUnique();
+
+                    b.ToTable("Tags", (string)null);
+                });
+
             modelBuilder.Entity("Custra.Domain.Tasks.TaskItem", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1060,6 +1255,82 @@ namespace Custra.Infrastructure.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("Custra.Domain.Tags.ContactTag", b =>
+                {
+                    b.HasOne("Custra.Domain.Contacts.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Custra.Domain.Tags.Tag", "Tag")
+                        .WithMany("ContactTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Contact");
+
+                    b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("Custra.Domain.Tags.CustomerTag", b =>
+                {
+                    b.HasOne("Custra.Domain.Customers.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Custra.Domain.Tags.Tag", "Tag")
+                        .WithMany("CustomerTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("Custra.Domain.Tags.LeadTag", b =>
+                {
+                    b.HasOne("Custra.Domain.Leads.Lead", "Lead")
+                        .WithMany()
+                        .HasForeignKey("LeadId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Custra.Domain.Tags.Tag", "Tag")
+                        .WithMany("LeadTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Lead");
+
+                    b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("Custra.Domain.Tags.OpportunityTag", b =>
+                {
+                    b.HasOne("Custra.Domain.Opportunities.Opportunity", "Opportunity")
+                        .WithMany()
+                        .HasForeignKey("OpportunityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Custra.Domain.Tags.Tag", "Tag")
+                        .WithMany("OpportunityTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Opportunity");
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("Custra.Domain.Tasks.TaskItem", b =>
                 {
                     b.HasOne("Custra.Domain.Activities.Activity", "Activity")
@@ -1167,6 +1438,17 @@ namespace Custra.Infrastructure.Migrations
             modelBuilder.Entity("Custra.Domain.Opportunities.SalesPipelineStage", b =>
                 {
                     b.Navigation("Opportunities");
+                });
+
+            modelBuilder.Entity("Custra.Domain.Tags.Tag", b =>
+                {
+                    b.Navigation("ContactTags");
+
+                    b.Navigation("CustomerTags");
+
+                    b.Navigation("LeadTags");
+
+                    b.Navigation("OpportunityTags");
                 });
 #pragma warning restore 612, 618
         }

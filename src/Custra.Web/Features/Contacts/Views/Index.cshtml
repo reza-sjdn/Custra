@@ -34,7 +34,14 @@
                    name="search"
                    value="@Model.Search"
                    class="form-control"
-                   placeholder="Search contacts..." />
+                   placeholder="Search contacts ..." 
+                   style="min-width: 300px;" />
+
+            <select asp-for="TagId"
+                    asp-items="Model.AvailableTags"
+                    class="form-select w-25">
+                <option value="">All tags</option>
+            </select>
 
             <button type="submit"
                     class="btn btn-outline-secondary">

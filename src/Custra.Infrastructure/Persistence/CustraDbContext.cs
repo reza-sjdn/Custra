@@ -9,6 +9,7 @@ using Custra.Domain.Leads;
 using Custra.Domain.Notes;
 using Custra.Domain.Opportunities;
 using Custra.Domain.Organizations;
+using Custra.Domain.Tags;
 using Custra.Domain.Tasks;
 using Custra.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -52,6 +53,12 @@ public class CustraDbContext
     public DbSet<Activity> Activities => Set<Activity>();
     public DbSet<TaskItem> Tasks => Set<TaskItem>();
     public DbSet<Note> Notes => Set<Note>();
+    public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<CustomerTag> CustomerTags => Set<CustomerTag>();
+    public DbSet<ContactTag> ContactTags => Set<ContactTag>();
+    public DbSet<LeadTag> LeadTags => Set<LeadTag>();
+    public DbSet<OpportunityTag> OpportunityTags => Set<OpportunityTag>();
+
 
     public override async Task<int> SaveChangesAsync(
         CancellationToken cancellationToken = default)

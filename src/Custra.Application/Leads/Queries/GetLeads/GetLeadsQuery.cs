@@ -11,6 +11,7 @@ namespace Custra.Application.Leads.Queries.GetLeads;
 
 public sealed record GetLeadsQuery(
     string? Search,
+    Guid? TagId,
     LeadStatus? Status,
     int Page = 1,
     int PageSize = 10)

@@ -43,6 +43,7 @@ public sealed class OpportunityQueries : IOpportunityQueries
 
     public async Task<PagedResult<OpportunityDto>> GetPagedAsync(
         string? search,
+        Guid? tagId,
         OpportunityStatus? status,
         Guid? customerId,
         Guid? ownerUserId,
@@ -62,6 +63,14 @@ public sealed class OpportunityQueries : IOpportunityQueries
                 x.Title.Contains(search) ||
                 (x.Description != null &&
                  x.Description.Contains(search)));
+        }
+
+        if (tagId.HasValue)
+        {
+            query = query.Where(opportunity =>
+                _dbContext.OpportunityTags.Any(opportunityTag =>
+                    opportunityTag.OpportunityId == opportunity.Id &&
+                    opportunityTag.TagId == tagId.Value));
         }
 
         if (status.HasValue)

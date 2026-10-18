@@ -59,6 +59,16 @@ using Custra.Application.SalesPipelineStages.Commands.UpdateSalesPipelineStage;
 using Custra.Application.SalesPipelineStages.Queries.GetSalesPipelineStageById;
 using Custra.Application.SalesPipelineStages.Queries.GetSalesPipelineStageLookup;
 using Custra.Application.SalesPipelineStages.Queries.GetSalesPipelineStages;
+using Custra.Application.Tags.Commands.AssignTag;
+using Custra.Application.Tags.Commands.CreateTag;
+using Custra.Application.Tags.Commands.DeleteTag;
+using Custra.Application.Tags.Commands.RemoveTagAssignment;
+using Custra.Application.Tags.Commands.UpdateTag;
+using Custra.Application.Tags.Queries.GetAssignedTags;
+using Custra.Application.Tags.Queries.GetTagById;
+using Custra.Application.Tags.Queries.GetTagLookup;
+using Custra.Application.Tags.Queries.GetTags;
+using Custra.Application.Tags.Queries.GetTagUsages;
 using Custra.Application.Tasks.Commands.CancelTaskItem;
 using Custra.Application.Tasks.Commands.CompleteTaskItem;
 using Custra.Application.Tasks.Commands.CreateTaskItem;
@@ -286,6 +296,28 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
             #region Dashboard
             GetDashboardQuery =>
                 Permissions.Dashboard.View,
+            #endregion
+
+            #region Tags
+            GetTagsQuery or
+            GetTagByIdQuery or
+            GetAssignedTagsQuery or
+            GetTagLookupQuery or
+            GetTagUsagesQuery =>
+            Permissions.Tags.View,
+
+            CreateTagCommand =>
+                Permissions.Tags.Create,
+
+            UpdateTagCommand =>
+                Permissions.Tags.Update,
+
+            DeleteTagCommand =>
+                Permissions.Tags.Delete,
+
+            AssignTagCommand or
+            RemoveTagAssignmentCommand =>
+                Permissions.Tags.Assign,
             #endregion
 
             _ => throw new InvalidOperationException(

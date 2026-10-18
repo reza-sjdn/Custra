@@ -1,6 +1,8 @@
-﻿using Custra.Application.Common.Interfaces.Persistence.Queries;
+﻿using Azure.Core;
+using Custra.Application.Common.Interfaces.Persistence.Queries;
 using Custra.Application.Common.Models;
 using Custra.Application.Customers.Queries.GetCustomerById;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -29,6 +31,7 @@ public sealed class CustomerQueries(CustraDbContext dbContext)
 
     public async Task<PagedResult<CustomerDto>> GetPagedAsync(
         string? search,
+        Guid? tagId,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default)
@@ -41,6 +44,14 @@ public sealed class CustomerQueries(CustraDbContext dbContext)
         {
             search = search.Trim();
             query = query.Where(x => x.Name.Contains(search));
+        }
+
+        if (tagId.HasValue)
+        {
+            query = query.Where(customer =>
+                _dbContext.CustomerTags.Any(customerTag =>
+                    customerTag.CustomerId == customer.Id &&
+                    customerTag.TagId == tagId.Value));
         }
 
         var totalCount = await query.CountAsync(cancellationToken);

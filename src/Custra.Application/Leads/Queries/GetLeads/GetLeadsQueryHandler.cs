@@ -20,6 +20,7 @@ public sealed class GetLeadsQueryHandler(
     {
         return await _leadQueries.GetPagedAsync(
             request.Search,
+            request.TagId,
             request.Status,
             request.Page,
             request.PageSize,

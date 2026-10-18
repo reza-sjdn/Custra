@@ -1,0 +1,16 @@
+﻿@model TagViewModel
+
+<h2>Delete Tag</h2>
+
+<div class="alert alert-warning">
+    Are you sure you want to delete the tag
+    <strong>@Model.Name</strong>?
+    This operation may fail if the tag is assigned to CRM records.
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <button type="submit" class="btn btn-danger">Confirm Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

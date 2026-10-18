@@ -1,6 +1,7 @@
 using Custra.Application;
 using Custra.Infrastructure;
 using Custra.Infrastructure.Persistence;
+using Custra.Web;
 using Custra.Web.Infrastructure.Mvc;
 using Custra.Web.Middleware;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,7 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(
     builder.Configuration);
+builder.Services.AddWeb();
 builder.Services
     .AddAuthentication(IdentityConstants.ApplicationScheme)
     .AddIdentityCookies();

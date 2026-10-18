@@ -5,31 +5,43 @@ using Custra.Application.Leads.Commands.DeleteLead;
 using Custra.Application.Leads.Commands.UpdateLead;
 using Custra.Application.Leads.Queries.GetLeadById;
 using Custra.Application.Leads.Queries.GetLeads;
+using Custra.Application.Tags.Queries.GetTagLookup;
 using Custra.Domain.Leads;
+using Custra.Web.Features.Customers.ViewModels;
 using Custra.Web.Features.Leads.ViewModels;
+using Custra.Web.Features.Tags.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Custra.Web.Features.Leads;
 
 public sealed class LeadsController(
     ISender sender,
-    IMapper mapper)
+    IMapper mapper,
+    ITagAssignmentViewModelService tagAssignmentViewModelService)
     : Controller
 {
     private readonly ISender _sender = sender;
     private readonly IMapper _mapper = mapper;
+    private readonly ITagAssignmentViewModelService _tagAssignmentViewModelService =
+        tagAssignmentViewModelService;
+
 
     [HttpGet]
     public async Task<IActionResult> Index(
         string? search,
+        Guid? tagId,
         LeadStatus? status,
         int page = 1,
         CancellationToken cancellationToken = default)
     {
+        var tags = await _sender.Send(new GetTagLookupQuery());
+
         var result = await _sender.Send(
             new GetLeadsQuery(
                 search,
+                tagId,
                 status,
                 page,
                 10),
@@ -46,6 +58,11 @@ public sealed class LeadsController(
             TotalCount = result.TotalCount,
             TotalPages = result.TotalPages
         };
+
+        viewModel.TagId = tagId;
+        viewModel.AvailableTags = tags
+            .Select(tag => new SelectListItem(tag.Name, tag.Id.ToString()))
+            .ToList();
 
         return View(viewModel);
     }
@@ -91,6 +108,9 @@ public sealed class LeadsController(
 
         var viewModel = _mapper.Map<LeadViewModel>(
             leadDto);
+
+        viewModel.TagAssignments = await _tagAssignmentViewModelService
+            .PopulateAsync("Lead", id);
 
         return View(viewModel);
     }

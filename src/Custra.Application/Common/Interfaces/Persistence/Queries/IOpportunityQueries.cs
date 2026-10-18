@@ -15,6 +15,7 @@ public interface IOpportunityQueries
 
     Task<PagedResult<OpportunityDto>> GetPagedAsync(
         string? search,
+        Guid? tagId,
         OpportunityStatus? status,
         Guid? customerId,
         Guid? ownerUserId,

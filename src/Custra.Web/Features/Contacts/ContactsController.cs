@@ -4,31 +4,40 @@ using Custra.Application.Contacts.Commands.DeleteContact;
 using Custra.Application.Contacts.Commands.UpdateContact;
 using Custra.Application.Contacts.Queries.GetContactById;
 using Custra.Application.Contacts.Queries.GetContacts;
+using Custra.Application.Tags.Queries.GetTagLookup;
 using Custra.Web.Features.Contacts.ViewModels;
+using Custra.Web.Features.Tags.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Custra.Web.Features.Contacts;
 
 public sealed class ContactsController(
     ISender sender,
-    IMapper mapper)
+    IMapper mapper,
+    ITagAssignmentViewModelService tagAssignmentViewModelService)
     : Controller
 {
     private readonly ISender _sender = sender;
     private readonly IMapper _mapper = mapper;
+    private readonly ITagAssignmentViewModelService _tagAssignmentViewModelService = tagAssignmentViewModelService;
 
     [HttpGet]
     public async Task<IActionResult> Index(
         Guid customerId,
         string? search,
+        Guid? tagId,
         int page = 1,
         CancellationToken cancellationToken = default)
     {
+        var tags = await _sender.Send(new GetTagLookupQuery());
+
         var result = await _sender.Send(
             new GetContactsQuery(
                 customerId,
                 search,
+                tagId,
                 page,
                 10),
             cancellationToken);
@@ -44,6 +53,11 @@ public sealed class ContactsController(
             TotalCount = result.TotalCount,
             TotalPages = result.TotalPages
         };
+
+        viewModel.TagId = tagId;
+        viewModel.AvailableTags = tags
+            .Select(tag => new SelectListItem(tag.Name, tag.Id.ToString()))
+            .ToList();
 
         return View(viewModel);
     }
@@ -92,6 +106,9 @@ public sealed class ContactsController(
 
         var viewModel = _mapper.Map<ContactViewModel>(
             contactDto);
+
+        viewModel.TagAssignments = await _tagAssignmentViewModelService
+            .PopulateAsync("Contact", id);
 
         return View(viewModel);
     }

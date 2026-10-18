@@ -1,4 +1,5 @@
 ﻿using Custra.Domain.Opportunities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Custra.Web.Features.Opportunities.ViewModels;
 
@@ -16,4 +17,8 @@ public class OpportunityListViewModel
 
     public bool HasPreviousPage => Page > 1;
     public bool HasNextPage => Page < TotalPages;
+
+    public Guid? TagId { get; set; }
+    public IReadOnlyList<SelectListItem> AvailableTags { get; set; }
+        = Array.Empty<SelectListItem>();
 }

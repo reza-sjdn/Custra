@@ -11,6 +11,7 @@ namespace Custra.Application.Contacts.Queries.GetContacts;
 public sealed record GetContactsQuery(
     Guid CustomerId,
     string? Search,
+    Guid? TagId,
     int Page = 1,
     int PageSize = 10)
     : IQuery<PagedResult<ContactDto>>, IAuthorizationRequest;

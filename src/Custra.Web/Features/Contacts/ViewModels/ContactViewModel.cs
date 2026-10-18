@@ -1,4 +1,6 @@
-﻿namespace Custra.Web.Features.Contacts.ViewModels;
+﻿using Custra.Web.Features.Tags.ViewModels;
+
+namespace Custra.Web.Features.Contacts.ViewModels;
 
 public sealed class ContactViewModel
 {
@@ -10,8 +12,8 @@ public sealed class ContactViewModel
     public string? JobTitle { get; set; }
     public string? Email { get; set; }
     public string? Phone { get; set; }
-
     public DateTime CreatedAt { get; set; }
+    public TagAssignmentViewModel TagAssignments { get; set; } = new();
 
     public string FullName =>
         $"{FirstName} {LastName}";

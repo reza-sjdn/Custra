@@ -20,6 +20,7 @@ public sealed class GetCustomersQueryHandler(
     {
         return await _customerQueries.GetPagedAsync(
             request.Search,
+            request.TagId,
             request.Page,
             request.PageSize,
             cancellationToken);

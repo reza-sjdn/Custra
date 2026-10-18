@@ -27,6 +27,7 @@ public sealed class GetOpportunitiesQueryHandler
     {
         return await _queries.GetPagedAsync(
             request.Search,
+            request.TagId,
             request.Status,
             request.CustomerId,
             request.OwnerUserId,

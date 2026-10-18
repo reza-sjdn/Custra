@@ -1,6 +1,11 @@
-﻿namespace Custra.Web.Features.Customers.ViewModels;
+﻿using Custra.Web.Features.Tags.ViewModels;
 
-public sealed record CustomerViewModel(
-    Guid Id,
-    string Name,
-    DateTime CreatedAt);
+namespace Custra.Web.Features.Customers.ViewModels;
+
+public sealed class CustomerViewModel
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public TagAssignmentViewModel TagAssignments { get; set; } = new();
+}

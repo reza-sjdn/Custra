@@ -36,6 +36,7 @@ public sealed class LeadQueries(CustraDbContext dbContext)
 
     public async Task<PagedResult<LeadDto>> GetPagedAsync(
         string? search,
+        Guid? tagId,
         LeadStatus? status,
         int page,
         int pageSize,
@@ -61,6 +62,14 @@ public sealed class LeadQueries(CustraDbContext dbContext)
         if (status.HasValue)
         {
             query = query.Where(x => x.Status == status.Value);
+        }
+
+        if (tagId.HasValue)
+        {
+            query = query.Where(lead =>
+                _dbContext.LeadTags.Any(leadTag =>
+                    leadTag.LeadId == lead.Id &&
+                    leadTag.TagId == tagId.Value));
         }
 
         var totalCount =

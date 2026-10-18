@@ -14,6 +14,7 @@ public interface ICustomerQueries
 
     Task<PagedResult<CustomerDto>> GetPagedAsync(
         string? search,
+        Guid? tagId,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default);

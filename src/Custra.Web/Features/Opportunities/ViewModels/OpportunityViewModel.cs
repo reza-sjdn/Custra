@@ -1,4 +1,5 @@
 ﻿using Custra.Domain.Opportunities;
+using Custra.Web.Features.Tags.ViewModels;
 
 namespace Custra.Web.Features.Opportunities.ViewModels;
 
@@ -18,4 +19,5 @@ public class OpportunityViewModel
     public OpportunityStatus Status { get; set; }
 
     public DateTime CreatedAt { get; set; }
+    public TagAssignmentViewModel TagAssignments { get; set; } = new();
 }

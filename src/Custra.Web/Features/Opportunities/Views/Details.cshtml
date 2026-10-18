@@ -75,8 +75,11 @@
 
 <hr />
 
-<div class="mb-3">
-    <h4>Opportunity Status</h4>
+<partial name="~/Features/Tags/Views/_Assignments.cshtml"
+         model="Model.TagAssignments" />
+
+<div class="mb-3 mt-4 d-flex gap-2">
+    <h4 class="me-4">Opportunity Status</h4>
 
     @if (Model.Status == OpportunityStatus.Open)
     {

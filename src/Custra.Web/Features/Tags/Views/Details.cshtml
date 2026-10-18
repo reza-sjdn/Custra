@@ -1,0 +1,90 @@
+﻿@model TagViewModel
+
+<h2>Tag Details</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">Name</dt>
+    <dd class="col-sm-10">
+        <span class="badge" style="background-color: @Model.Color">
+            @Model.Name
+        </span>
+    </dd>
+
+    <dt class="col-sm-2">Color</dt>
+    <dd class="col-sm-10">@Model.Color</dd>
+
+    <dt class="col-sm-2">Created</dt>
+    <dd class="col-sm-10">@Model.CreatedAt</dd>
+
+    <dt class="col-sm-2">Modified</dt>
+    <dd class="col-sm-10">@(Model.ModifiedAt?.ToString() ?? "—")</dd>
+
+    <dt class="col-sm-2">Customer Count</dt>
+    <dd class="col-sm-10">@Model.CustomerCount</dd>
+
+    <dt class="col-sm-2">Contact Count</dt>
+    <dd class="col-sm-10">@Model.ContactCount</dd>
+
+    <dt class="col-sm-2">Lead Count</dt>
+    <dd class="col-sm-10">@Model.LeadCount</dd>
+
+    <dt class="col-sm-2">Opportunity Count</dt>
+    <dd class="col-sm-10">@Model.OpportunityCount</dd>
+
+    <dt class="col-sm-2">Total Usage Count</dt>
+    <dd class="col-sm-10">@Model.TotalUsageCount</dd>
+</dl>
+
+<h4 class="mt-4">Records Using This Tag</h4>
+
+@if (Model.Usages.Count == 0)
+{
+    <p class="text-muted">This tag is not assigned to any records.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Record Type</th>
+                <th>Record Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usage in Model.Usages)
+            {
+                var controller = usage.RecordType switch
+                {
+                                "Customer" => "Customers",
+                                "Contact" => "Contacts",
+                                "Lead" => "Leads",
+                                "Opportunity" => "Opportunities",
+                    _ => null
+                };
+
+                <tr>
+                    <td>@usage.RecordType</td>
+                    <td>@usage.RecordName</td>
+                    <td>
+                        @if (controller != null)
+                        {
+                            <a asp-controller="@controller"
+                               asp-action="Details"
+                               asp-route-id="@usage.RecordId"
+                               class="btn btn-sm btn-outline-primary">
+                                View
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a asp-action="Edit" asp-route-id="@Model.Id"
+   class="btn btn-primary">Edit</a>
+<a asp-action="Delete" asp-route-id="@Model.Id"
+   class="btn btn-danger">Delete</a>
+<a asp-action="Index" class="btn btn-secondary">Back</a>

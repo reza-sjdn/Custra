@@ -21,6 +21,7 @@ public sealed class GetContactsQueryHandler(
         return await _contactQueries.GetPagedAsync(
             request.CustomerId,
             request.Search,
+            request.TagId,
             request.Page,
             request.PageSize,
             cancellationToken);

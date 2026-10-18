@@ -79,6 +79,12 @@ public static class DependencyInjection
         services.AddScoped<INoteQueries, NoteQueries>();
         services.AddScoped<INoteCommands, NoteCommands>();
 
+        services.AddScoped<ITagQueries, TagQueries>();
+        services.AddScoped<ITagCommands, TagCommands>();
+
+        services.AddScoped<ITagAssignmentCommands, TagAssignmentCommands>();
+        services.AddScoped<ITagAssignmentQueries, TagAssignmentQueries>();
+
         return services;
     }
 }

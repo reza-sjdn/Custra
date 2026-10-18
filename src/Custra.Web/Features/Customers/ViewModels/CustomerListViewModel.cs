@@ -1,4 +1,6 @@
-﻿namespace Custra.Web.Features.Customers.ViewModels;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace Custra.Web.Features.Customers.ViewModels;
 
 public sealed class CustomerListViewModel
 {
@@ -18,4 +20,9 @@ public sealed class CustomerListViewModel
     public bool HasPreviousPage => Page > 1;
 
     public bool HasNextPage => Page < TotalPages;
+
+    public Guid? TagId { get; set; }
+
+    public IReadOnlyList<SelectListItem> AvailableTags { get; set; }
+        = Array.Empty<SelectListItem>();
 }
