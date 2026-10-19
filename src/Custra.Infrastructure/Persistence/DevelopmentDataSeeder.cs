@@ -330,7 +330,11 @@ public static class DevelopmentDataSeeder
                 "Assign and Remove Assignment of tags"),
             #endregion
 
-
+            #region Notifications
+            new Permission(
+                Permissions.Notifications.View,
+                "View notifications"),
+            #endregion
         };
 
         foreach (var permission in permissions)

@@ -3,8 +3,10 @@ using Custra.Application.Common.Interfaces.Authorization;
 using Custra.Application.Common.Interfaces.Persistence;
 using Custra.Application.Common.Interfaces.Persistence.Commands;
 using Custra.Application.Common.Interfaces.Persistence.Queries;
+using Custra.Application.Notifications;
 using Custra.Infrastructure.Authorization;
 using Custra.Infrastructure.Identity;
+using Custra.Infrastructure.Notifications;
 using Custra.Infrastructure.Persistence;
 using Custra.Infrastructure.Persistence.Commands;
 using Custra.Infrastructure.Persistence.Queries;
@@ -84,6 +86,12 @@ public static class DependencyInjection
 
         services.AddScoped<ITagAssignmentCommands, TagAssignmentCommands>();
         services.AddScoped<ITagAssignmentQueries, TagAssignmentQueries>();
+
+        services.AddScoped<INotificationCommands, NotificationCommands>();
+        services.AddScoped<INotificationQueries, NotificationQueries>();
+        services.AddScoped<INotificationDispatcher, NotificationDispatcher>();
+
+        services.AddScoped<INotificationChannel, InAppNotificationChannel>();
 
         return services;
     }

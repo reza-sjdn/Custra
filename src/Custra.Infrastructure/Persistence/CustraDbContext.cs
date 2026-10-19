@@ -7,6 +7,7 @@ using Custra.Domain.Contacts;
 using Custra.Domain.Customers;
 using Custra.Domain.Leads;
 using Custra.Domain.Notes;
+using Custra.Domain.Notifications;
 using Custra.Domain.Opportunities;
 using Custra.Domain.Organizations;
 using Custra.Domain.Tags;
@@ -58,6 +59,7 @@ public class CustraDbContext
     public DbSet<ContactTag> ContactTags => Set<ContactTag>();
     public DbSet<LeadTag> LeadTags => Set<LeadTag>();
     public DbSet<OpportunityTag> OpportunityTags => Set<OpportunityTag>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
 
     public override async Task<int> SaveChangesAsync(

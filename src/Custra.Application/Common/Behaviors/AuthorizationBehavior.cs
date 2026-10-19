@@ -36,6 +36,8 @@ using Custra.Application.Notes.Commands.DeleteNote;
 using Custra.Application.Notes.Commands.UpdateNote;
 using Custra.Application.Notes.Queries.GetNoteById;
 using Custra.Application.Notes.Queries.GetNotes;
+using Custra.Application.Notifications.Commands.MarkNotificationAsRead;
+using Custra.Application.Notifications.Queries.GetLatestNotifications;
 using Custra.Application.Opportunities.Commands.ChangeOpportunityStage;
 using Custra.Application.Opportunities.Commands.CreateOpportunity;
 using Custra.Application.Opportunities.Commands.DeleteOpportunity;
@@ -318,6 +320,12 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
             AssignTagCommand or
             RemoveTagAssignmentCommand =>
                 Permissions.Tags.Assign,
+            #endregion
+
+            #region Notifications
+            MarkNotificationAsReadCommand or
+            GetLatestNotificationsQuery =>
+                Permissions.Notifications.View,
             #endregion
 
             _ => throw new InvalidOperationException(

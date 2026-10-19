@@ -84,4 +84,9 @@ public static class Permissions
         public const string Assign = "Tags.Assign";
     }
 
+    public static class Notifications
+    {
+        public const string View = "Notifications.View";
+    }
+
 }
