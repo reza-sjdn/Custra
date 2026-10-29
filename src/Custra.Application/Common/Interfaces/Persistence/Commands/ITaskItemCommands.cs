@@ -16,4 +16,9 @@ public interface ITaskItemCommands
         CancellationToken cancellationToken = default);
 
     void Delete(TaskItem task);
+
+    Task MarkDueNotificationSentAsync(
+        Guid taskId,
+        CancellationToken cancellationToken = default);
+
 }

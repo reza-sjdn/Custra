@@ -36,4 +36,20 @@ public sealed class TaskItemCommands : ITaskItemCommands
     {
         _dbContext.Tasks.Remove(task);
     }
+
+    public async Task MarkDueNotificationSentAsync(
+        Guid taskId,
+        CancellationToken cancellationToken = default)
+    {
+        var task = await _dbContext.Tasks
+            .FirstOrDefaultAsync(x => x.Id == taskId, cancellationToken);
+
+        if (task is null)
+            throw new KeyNotFoundException("Task not found.");
+
+        task.MarkDueNotificationSent();
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
 }

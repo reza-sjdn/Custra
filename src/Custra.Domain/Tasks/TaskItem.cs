@@ -35,6 +35,8 @@ public sealed class TaskItem : OrganizationOwnedEntity
     public Guid? ActivityId { get; private set; }
     public Activity? Activity { get; private set; }
 
+    public DateTime? DueNotificationSentAt { get; private set; }
+
     private TaskItem()
     {
     }
@@ -218,4 +220,10 @@ public sealed class TaskItem : OrganizationOwnedEntity
                 parameterName);
         }
     }
+
+    public void MarkDueNotificationSent()
+    {
+        DueNotificationSentAt ??= DateTime.UtcNow;
+    }
+
 }

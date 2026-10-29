@@ -38,6 +38,7 @@ using Custra.Application.Notes.Queries.GetNoteById;
 using Custra.Application.Notes.Queries.GetNotes;
 using Custra.Application.Notifications.Commands.MarkNotificationAsRead;
 using Custra.Application.Notifications.Queries.GetLatestNotifications;
+using Custra.Application.Notifications.Queries.GetUnreadNotificationCount;
 using Custra.Application.Opportunities.Commands.ChangeOpportunityStage;
 using Custra.Application.Opportunities.Commands.CreateOpportunity;
 using Custra.Application.Opportunities.Commands.DeleteOpportunity;
@@ -324,7 +325,8 @@ public sealed class AuthorizationBehavior<TRequest, TResponse>(
 
             #region Notifications
             MarkNotificationAsReadCommand or
-            GetLatestNotificationsQuery =>
+            GetLatestNotificationsQuery or
+            GetUnreadNotificationCountQuery =>
                 Permissions.Notifications.View,
             #endregion
 

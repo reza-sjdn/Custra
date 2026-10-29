@@ -52,11 +52,7 @@
                             <a class="btn btn-sm btn-outline-success" asp-area="" asp-controller="Account" asp-action="Login">Log In</a>
                         </li>
                         <li class="nav-item me-2">
-                            <a asp-controller="Notifications"
-                                asp-action="Index"
-                                class="nav-link p-0">
-                                <i class="bi bi-bell-fill text-danger" style="font-size: 18px;"></i>
-                            </a>
+                            @await Component.InvokeAsync("NotificationBell")
                         </li>
                     </ul>
                 </div>
